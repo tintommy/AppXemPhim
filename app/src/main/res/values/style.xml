@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Màu nền cho SearchView -->
+        <item name="android:background">@color/black</item>
+        <!-- Màu văn bản cho SearchView -->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:color">@color/white</item>
+        <!-- Màu của phần hiển thị văn bản trong ô nhập liệu -->
+        <item name="android:textColorHint">@color/black</item>
+        <!-- Màu của thanh tìm kiếm (icon) -->
+        <item name="android:tint">@color/white</item>
+        <item name="android:editTextColor">@android:color/white</item>
+    </style>
+</resources>
