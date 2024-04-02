@@ -10,4 +10,14 @@
         android:name="com.example.appxemphim.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/phimFragment"
+        android:name="com.example.appxemphim.fragments.PhimFragment"
+        android:label="fragment_phim_le"
+        tools:layout="@layout/fragment_phim" />
+    <fragment
+        android:id="@+id/danhMucFragment"
+        android:name="com.example.appxemphim.fragments.DanhMucFragment"
+        android:label="fragment_danh_muc"
+        tools:layout="@layout/fragment_danh_muc" />
 </navigation>

@@ -36,11 +36,8 @@
             android:id="@+id/nav_phimBo"
             android:title="Phim bộ" />
         <item
-            android:id="@+id/nav_theLoai"
-            android:title="Thể loại" />
-        <item
-            android:id="@+id/nav_quocGia"
-            android:title="Quốc gia" />
+            android:id="@+id/nav_theLoaivaQuocGia"
+            android:title="Thể loại và quốc gia" />
 
 
     </group>

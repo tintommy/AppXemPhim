@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragments.DanhMucFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Thể loại"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/rightLine"
+            app:layout_constraintStart_toStartOf="@id/leftLine"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTheLoai"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:verticalSpacing="8dp"
+            app:layout_constraintEnd_toEndOf="@id/rightLine"
+            app:layout_constraintStart_toStartOf="@id/leftLine"
+            app:layout_constraintTop_toBottomOf="@id/tv1"
+
+            tools:listitem="@layout/danh_muc_item_layout"
+
+            />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Quốc gia"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/rightLine"
+            app:layout_constraintStart_toStartOf="@id/leftLine"
+            app:layout_constraintTop_toBottomOf="@id/rvTheLoai" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvQuocGia"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:verticalSpacing="8dp"
+            app:layout_constraintEnd_toEndOf="@id/rightLine"
+            app:layout_constraintStart_toStartOf="@id/leftLine"
+            app:layout_constraintTop_toBottomOf="@id/tv2"
+            app:spanCount="2"
+            tools:listitem="@layout/danh_muc_item_layout"
+
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.04" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.96" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
