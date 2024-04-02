@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
         initAdapter()
         movieViewModel.loadPhimBo()
         movieViewModel.loadPhimLe()
-        // movieViewModel.loadPhimMoi()
+        movieViewModel.loadPhimMoi()
 
         lifecycleScope.launchWhenStarted {
             movieViewModel.phimLe.collectLatest {
@@ -114,10 +114,6 @@ class HomeFragment : Fragment() {
 
         phimLeAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movieId: Int) {
-//               var b: Bundle= Bundle()
-//                b.putInt("movieId",movieId)
-//                   Navigation.findNavController(requireActivity(),R.id.fragmentContainerView).navigate(R.id.action_homeFragment_to_phimFragment,b)
-
                 var b: Bundle = Bundle()
                 b.putInt("movieId", movieId)
                 val phimFragment = PhimFragment()
@@ -151,6 +147,17 @@ class HomeFragment : Fragment() {
         binding.rvPhimMoi.adapter = phimMoiAdapter
         binding.rvPhimMoi.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        phimMoiAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
+            override fun onItemClick(movieId: Int) {
+                var b: Bundle = Bundle()
+                b.putInt("movieId", movieId)
+                val phimFragment = PhimFragment()
+                phimFragment.arguments = b
+                (activity as MainActivity).replaceFragment(phimFragment)
+
+            }
+
+        })
 
     }
 
