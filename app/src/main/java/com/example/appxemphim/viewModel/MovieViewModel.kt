@@ -37,26 +37,26 @@ class MovieViewModel : ViewModel() {
     }
 
 
-//     fun loadPhimMoi() {
-//        viewModelScope.launch {
-//            _phimMoi.emit(Resource.Loading())
-//
-//            val response= movieService.getPhimTrangChu("le");
-//
-//            if(response.isSuccessful){
-//                if(response.code()==200){
-//                    _phimMoi.emit(Resource.Success(response.body()!!))
-//                }
-//                else{
-//                    _phimMoi.emit(Resource.Error("Có lỗi xảy ra khi load phim mới"))
-//                }
-//            }
-//            else{
-//                _phimMoi.emit(Resource.Error("Mất kết nối tới server"))
-//            }
-//
-//        }
-//    }
+     fun loadPhimMoi() {
+        viewModelScope.launch {
+            _phimMoi.emit(Resource.Loading())
+
+            val response= movieService.getMovieHome("moi");
+
+            if(response.isSuccessful){
+                if(response.code()==200){
+                    _phimMoi.emit(Resource.Success(response.body()!!))
+                }
+                else{
+                    _phimMoi.emit(Resource.Error("Có lỗi xảy ra khi load phim mới"))
+                }
+            }
+            else{
+                _phimMoi.emit(Resource.Error("Mất kết nối tới server"))
+            }
+
+        }
+    }
 
     fun loadPhimBo() {
         viewModelScope.launch {
