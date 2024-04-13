@@ -1,5 +1,7 @@
 package com.example.appxemphim.activities
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -26,15 +28,23 @@ import com.example.appxemphim.adapters.MovieSearchAdapter
 import com.example.appxemphim.databinding.ActivityMainBinding
 import com.example.appxemphim.fragments.DanhMucFragment
 import com.example.appxemphim.fragments.HomeFragment
+import com.example.appxemphim.fragments.PageFragment
 import com.example.appxemphim.fragments.PhimFragment
+import com.example.appxemphim.fragments.SavedMovieFragment
+import com.example.appxemphim.fragments.UserFragment
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.MovieViewModel
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var binding: ActivityMainBinding
+    @Inject
+    lateinit var sharedPref: SharedPreferences
+    public lateinit var binding: ActivityMainBinding
     private lateinit var movieSearchAdapter: MovieSearchAdapter
     private val movieViewModel by viewModels<MovieViewModel>()
 
@@ -57,7 +67,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
 
         initAdapter()
-        khongDangNhap()
+        daDangNhap()
 
 
 
@@ -163,7 +173,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_caNhan -> {
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
+                val userFragment = UserFragment()
+                replaceFragment(userFragment)
+
+            }
+
+            R.id.nav_phimDaLuu -> {
+                val savedMovieFragment = SavedMovieFragment()
+                replaceFragment(savedMovieFragment)
+
 
             }
 
@@ -179,12 +197,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_phimLe -> {
-                Toast.makeText(this, "4", Toast.LENGTH_SHORT).show()
+                var b: Bundle = Bundle()
+                b.putInt("categoryId", 1)
+                b.putString("categoryName", "Phim lẻ")
+                val pageFragment = PageFragment()
+                pageFragment.arguments = b
+               replaceFragment(pageFragment)
 
             }
 
             R.id.nav_phimBo -> {
-                Toast.makeText(this, "5", Toast.LENGTH_SHORT).show()
+                var b: Bundle = Bundle()
+                b.putInt("categoryId", 2)
+                b.putString("categoryName", "Phim bộ")
+                val pageFragment = PageFragment()
+                pageFragment.arguments = b
+                replaceFragment(pageFragment)
 
             }
 
@@ -195,8 +223,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_dangXuat -> {
-                Toast.makeText(this, "6", Toast.LENGTH_SHORT).show()
 
+                val editor = sharedPref.edit()
+                editor.remove("token")
+                editor.remove("username")
+                editor.apply()
+
+                Toast.makeText(this@MainActivity, "Đã đăng xuất ", Toast.LENGTH_SHORT).show()
+                val intent = Intent(
+                    this@MainActivity,
+                    LoginSignUpActivity::class.java
+                ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
             }
 
             else -> return false
@@ -229,7 +268,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    public fun replaceFragment(fragment: Fragment) {
+     fun replaceFragment(fragment: Fragment) {
 
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragmentContainerView, fragment)

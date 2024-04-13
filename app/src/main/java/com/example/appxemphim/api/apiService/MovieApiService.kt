@@ -10,11 +10,35 @@ import retrofit2.http.Query
 interface MovieApiService {
     @GET("/api/movie/get-phim-trang-chu/{loaiPhim}")
     suspend fun getMovieHome(@Path(value = "loaiPhim") loaiPhim: String): Response<List<Movie>>
+
+    @GET("/api/movie/get-random")
+    suspend fun getRandomMovie(@Query("top") top: Int): Response<List<Movie>>
+
     @GET("/api/movie/{id}")
     suspend fun getMovie(@Path(value = "id") id: Int): Response<Movie>
+
     @GET("/api/movie/get-all")
-    suspend fun getMovieSearch(@Query("sortField") sortField: String = "",
-                               @Query("typeSort") typeSort: String = "DESC",
-                               @Query("searchContent") searchContent: String = ""
+    suspend fun getMovieSearch(
+        @Query("sortField") sortField: String = "",
+        @Query("typeSort") typeSort: String = "DESC",
+        @Query("searchContent") searchContent: String = ""
+    ): Response<List<Movie>>
+
+    @GET("/api/movie/get-all-by-category")
+    suspend fun getAllMovieByCategory(
+        @Query("sortField") sortField: String,
+        @Query("typeSort") typeSort: String,
+        @Query("searchContent") searchContent: String,
+        @Query("category_id") category_id: Int,
+    ): Response<List<Movie>>
+
+
+    @GET("/api/movie/get-page-by-category")
+    suspend fun getPageMovieByCategory(
+        @Query("offset") offset: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("field") field: String,
+        @Query("searchContent") searchContent: String,
+        @Query("categoryId") categoryId: Int,
     ): Response<List<Movie>>
 }

@@ -20,9 +20,10 @@ import com.example.appxemphim.databinding.FragmentHomeBinding
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.MovieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val movieViewModel by viewModels<MovieViewModel>()
@@ -104,6 +105,24 @@ class HomeFragment : Fragment() {
 
         }
 
+
+        binding.tvPhimLe.setOnClickListener {
+            var b: Bundle = Bundle()
+            b.putInt("categoryId", 1)
+            b.putString("categoryName", "Phim lẻ")
+            val pageFragment = PageFragment()
+            pageFragment.arguments = b
+            (activity as MainActivity).replaceFragment(pageFragment)
+        }
+        binding.tvPhimBo.setOnClickListener {
+            var b: Bundle = Bundle()
+            b.putInt("categoryId", 2)
+            b.putString("categoryName", "Phim bộ")
+            val pageFragment = PageFragment()
+            pageFragment.arguments = b
+            (activity as MainActivity).replaceFragment(pageFragment)
+
+        }
     }
 
     private fun initAdapter() {

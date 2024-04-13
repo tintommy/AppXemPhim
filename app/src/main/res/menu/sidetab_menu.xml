@@ -4,27 +4,34 @@
     tools:showIn="navigation_view">
 
 
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dangNhap"
             android:icon="@drawable/baseline_login_24"
-            android:title="Đăng nhập "
             android:iconTint="@color/white"
+            android:title="Đăng nhập "
 
 
             />
         <item
             android:id="@+id/nav_caNhan"
             android:icon="@drawable/baseline_person_24"
-            android:title="Thông tin cá nhân "
             android:iconTint="@color/white"
+            android:title="Thông tin cá nhân "
 
             />
+        <item
+            android:id="@+id/nav_phimDaLuu"
+            android:icon="@drawable/baseline_favorite_24"
+            android:title="Phim đã lưu" />
         <item
             android:id="@+id/nav_phimDaMua"
             android:icon="@drawable/baseline_collections_bookmark_24"
             android:title="Phim đã mua" />
+        <item
+            android:id="@+id/nav_lishSuXem"
+            android:icon="@drawable/schedule_24px"
+            android:title="Lịch sử xem" />
         <item
             android:id="@+id/nav_trangChu"
             android:icon="@drawable/baseline_home_24"

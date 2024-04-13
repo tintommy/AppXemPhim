@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.appxemphim.R
+import com.example.appxemphim.activities.MainActivity
 import com.example.appxemphim.adapters.CategoryAdapter
 import com.example.appxemphim.adapters.CountryAdapter
 import com.example.appxemphim.databinding.DanhMucItemLayoutBinding
@@ -17,9 +18,10 @@ import com.example.appxemphim.databinding.FragmentDanhMucBinding
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.CategoryCountryViewModel
 import com.example.appxemphim.viewModel.MovieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
-
+@AndroidEntryPoint
 class DanhMucFragment : Fragment() {
     private lateinit var binding: FragmentDanhMucBinding
     private val categoryCountryViewModel by viewModels<CategoryCountryViewModel>()
@@ -90,6 +92,17 @@ class DanhMucFragment : Fragment() {
         categoryAdapter= CategoryAdapter()
         binding.rvTheLoai.adapter=categoryAdapter
         binding.rvTheLoai.layoutManager=GridLayoutManager(requireContext(),2)
+        categoryAdapter.setOnItemClickListener(object : CategoryAdapter.OnItemClickListener{
+            override fun onItemClick(categoryId: Int,categoryName:String) {
+                var b: Bundle = Bundle()
+                b.putInt("categoryId", categoryId)
+                b.putString("categoryName", categoryName)
+                val pageFragment = PageFragment()
+                pageFragment.arguments = b
+                (activity as MainActivity).replaceFragment(pageFragment)
+            }
+        })
+
 
 
         countryAdapter=CountryAdapter()
