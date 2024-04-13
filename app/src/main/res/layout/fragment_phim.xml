@@ -17,22 +17,32 @@
         <com.google.android.exoplayer2.ui.StyledPlayerView
             android:id="@+id/videoPlayer"
             android:layout_width="match_parent"
-            android:visibility="visible"
             android:layout_height="230dp"
+            android:visibility="visible"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/ivError"
             android:layout_width="match_parent"
             android:layout_height="230dp"
-            android:src="@drawable/video_error"
             android:scaleType="centerCrop"
+            android:src="@drawable/video_error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnFullScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="100dp"
+            android:text="click"
+            app:layout_constraintEnd_toEndOf="@id/videoPlayer"
+            app:layout_constraintStart_toStartOf="@id/videoPlayer"
+            app:layout_constraintTop_toBottomOf="@id/videoPlayer" />
 
         <LinearLayout
             android:id="@+id/linearPhim"
@@ -42,7 +52,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@id/rightLine"
             app:layout_constraintStart_toStartOf="@id/leftLine"
-            app:layout_constraintTop_toBottomOf="@+id/videoPlayer">
+            app:layout_constraintTop_toBottomOf="@+id/btnFullScreen">
 
             <ImageView
                 android:id="@+id/ivHinh"
@@ -118,6 +128,16 @@
 
                     />
 
+                <ImageButton
+                    android:id="@+id/btnLuuPhim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:selectableItemBackgroundBorderless"
+                    android:src="@drawable/baseline_favorite_border_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLuotXem" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -140,7 +160,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Chọn tập phim"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -151,7 +171,7 @@
                 android:layout_marginTop="10dp"
 
                 />
-<!--               tools:listitem="@layout/tap_phim_item_layout" />-->
+            <!--               tools:listitem="@layout/tap_phim_item_layout" />-->
 
         </LinearLayout>
 
@@ -173,7 +193,7 @@
                 android:drawableLeft="@drawable/baseline_feed_24"
                 android:text="Thông tin"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
 
 
@@ -210,24 +230,96 @@
                 android:drawableLeft="@drawable/baseline_groups_24"
                 android:text="Diễn viên"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginTop="5dp"
-           >
+                android:layout_marginTop="5dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDienVien"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginTop="5dp"
 
                     />
             </ScrollView>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:text="Có thể bạn sẽ xem"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPhimNgauNhien"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="Bình luận phim"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:numStars="5"
+                android:rating="5"
+                android:stepSize="1"
+                android:theme="@style/RatingBar" />
+
+            <EditText
+                android:id="@+id/etBinhLuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:hint="Nội dung bình luận"
+                android:maxLines="3"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/btnGuiBinhLuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#FF0000"
+                android:padding="10dp"
+                android:text="Gửi bình luận"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:id="@+id/rvBinhLuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
         </LinearLayout>
 
 

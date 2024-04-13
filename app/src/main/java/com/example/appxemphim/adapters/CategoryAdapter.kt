@@ -44,7 +44,7 @@ class CategoryAdapter: RecyclerView.Adapter<CategoryAdapter.categoryViewHolder>(
 
 
     interface OnItemClickListener {
-        fun onItemClick(movieId: Int)
+        fun onItemClick(categoryId: Int, categoryname:String)
     }
 
     var click: OnItemClickListener? = null
@@ -58,6 +58,11 @@ class CategoryAdapter: RecyclerView.Adapter<CategoryAdapter.categoryViewHolder>(
     inner class categoryViewHolder(val binding: DanhMucItemLayoutBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(category: Category){
            binding.tvTenMuc.text=category.name
+            itemView.setOnClickListener {
+
+                click?.onItemClick(category.categoryId, category.name)
+
+            }
         }
 
     }

@@ -12,4 +12,8 @@
         <item name="android:tint">@color/white</item>
         <item name="android:editTextColor">@android:color/white</item>
     </style>
+    <style name="RatingBar" parent="Theme.AppCompat">
+<!--        <item name="colorControlNormal">@color/lightGrey</item>-->
+        <item name="colorControlActivated">#F6DD00</item>
+    </style>
 </resources>

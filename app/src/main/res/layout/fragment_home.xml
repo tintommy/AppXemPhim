@@ -64,16 +64,7 @@
 
                      />
 
-                <TextView
-                    android:id="@+id/tvPhimMoi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="-Xem tất cả phim mới-"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="italic" />
+
 
                 <TextView
                     android:layout_width="wrap_content"

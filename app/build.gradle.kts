@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    kotlin("kapt")
 }
 
 android {
@@ -48,7 +50,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
+    //hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
     //glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
@@ -67,8 +71,11 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
     implementation("com.google.android.exoplayer:exoplayer-dash:2.19.1")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")
-//    val mediaVersion = "1.2.0"
-//    implementation("androidx.media3:media3-exoplayer:$mediaVersion")
-//    implementation("androidx.media3:media3-ui:$mediaVersion")
-//    implementation("androidx.media3:media3-exoplayer-dash:$mediaVersion")
+//lodingbutton
+    implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
+    //circle image
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+}
+kapt {
+    correctErrorTypes = true
 }
