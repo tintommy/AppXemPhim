@@ -24,6 +24,8 @@ class CommentViewModel @Inject constructor(private val sharedPref: SharedPrefere
 
     private val _luuBinhLuan = MutableStateFlow<Resource<Comment>>(Resource.Unspecified())
     val luuBinhLuan = _luuBinhLuan.asStateFlow()
+    private val _taiBinhLuan = MutableStateFlow<Resource<List<Comment>>>(Resource.Unspecified())
+    val taiBinhLuan = _taiBinhLuan.asStateFlow()
 
     init {
         initApiService()
@@ -48,6 +50,21 @@ class CommentViewModel @Inject constructor(private val sharedPref: SharedPrefere
 
             }
         }
+    }
+
+    fun loadCmt(offset:Int,movieId: Int){
+        viewModelScope.launch {
+            _taiBinhLuan.emit(Resource.Loading())
+            val reponse = commentApiService.getPageComment(offset,5,movieId)
+            if(reponse.isSuccessful){
+                _taiBinhLuan.emit(Resource.Success(reponse.body()!!))
+            }
+            else{
+
+                _taiBinhLuan.emit(Resource.Error("Lỗi khi tải bình luận"))
+            }
+        }
+
     }
 
 }

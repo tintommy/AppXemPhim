@@ -2,6 +2,7 @@ package com.example.appxemphim.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -62,6 +63,14 @@ class MovieSearchAdapter : RecyclerView.Adapter<MovieSearchAdapter.movieSearchVi
             Glide.with(itemView).load(movie.image).into(binding.ivAnhPhim)
             itemView.setOnClickListener {
                click!!.onItemClick(movie.movieId)
+            }
+
+            if(movie.price>0){
+                binding.tvTien.visibility= View.VISIBLE
+                binding.tvTien.text= movie.price.toString()
+            }
+            else{
+                binding.tvTien.visibility= View.GONE
             }
         }
 

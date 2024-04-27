@@ -75,6 +75,14 @@ dependencies {
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
     //circle image
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    //VNPAY
+
+    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.squareup.okhttp3:okhttp:3.14.1")
+    implementation(files("libs/merchant-1.0.25.aar"))
+
+
 }
 kapt {
     correctErrorTypes = true

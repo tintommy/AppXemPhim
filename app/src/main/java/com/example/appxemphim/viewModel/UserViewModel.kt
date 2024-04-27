@@ -10,6 +10,7 @@ import com.example.appxemphim.request.ChangePassRequest
 import com.example.appxemphim.request.SignInRequest
 import com.example.appxemphim.model.Token
 import com.example.appxemphim.model.User
+import com.example.appxemphim.request.SignUpRequest
 import com.example.appxemphim.request.Status
 import com.example.appxemphim.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,9 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
     private val _login = MutableStateFlow<Resource<Token>>(Resource.Unspecified())
     val login = _login.asStateFlow()
+
+    private val _signup = MutableStateFlow<Resource<Status>>(Resource.Unspecified())
+    val signup = _signup.asStateFlow()
 
     private val _user = MutableStateFlow<Resource<User>>(Resource.Unspecified())
     val user = _user.asStateFlow()
@@ -85,27 +89,44 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
     }
 
-    fun userChangePass(oldPass:String,newPass: String) {
+    fun userChangePass(oldPass: String, newPass: String) {
         viewModelScope.launch {
             _changePass.emit(Resource.Loading())
 
-            val changePassRequest=ChangePassRequest(username,oldPass,newPass,"","")
+            val changePassRequest = ChangePassRequest(username, oldPass, newPass, "", "")
 
 
-                val changePassResponse = changePassRequest?.let { userService.userChangePass(it) }
-                if (changePassResponse!!.isSuccessful) {
+            val changePassResponse = changePassRequest?.let { userService.userChangePass(it) }
+            if (changePassResponse!!.isSuccessful) {
 
-                    if(changePassResponse.body()!!.status)
-                             _changePass.emit(Resource.Success(changePassResponse.body()!!))
-                        else if(!changePassResponse.body()!!.status){
-                        _changePass.emit(Resource.Error("false"))
-                        }
-                } else {
-                    _changePass.emit(Resource.Error("error"))
+                if (changePassResponse.body()!!.status)
+                    _changePass.emit(Resource.Success(changePassResponse.body()!!))
+                else if (!changePassResponse.body()!!.status) {
+                    _changePass.emit(Resource.Error("false"))
                 }
+            } else {
+                _changePass.emit(Resource.Error("error"))
+            }
+
+        }
+    }
+
+    fun userSignUp(username: String, password: String, email: String) {
+        viewModelScope.launch {
+            val signUpRequest = SignUpRequest(username, password, email, 1)
+
+            _signup.emit(Resource.Loading())
+            val response = userService.userSignup(signUpRequest)
+            if (response.isSuccessful)
+                _signup.emit(Resource.Success(response.body()!!))
+            else {
+                _signup.emit(Resource.Error("Lỗi khi đăng kí"))
 
             }
+
         }
 
     }
+
+}
 

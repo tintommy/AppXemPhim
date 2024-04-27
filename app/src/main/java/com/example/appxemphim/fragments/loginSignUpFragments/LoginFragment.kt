@@ -10,6 +10,8 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
 import com.example.appxemphim.databinding.FragmentLoginBinding
 import com.example.appxemphim.util.Resource
@@ -88,6 +90,10 @@ class LoginFragment : Fragment() {
 
             }
 
+        }
+
+        binding.btnSignUp.setOnClickListener {
+            it.findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
 
     }
