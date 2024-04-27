@@ -1,5 +1,8 @@
 package com.example.appxemphim.fragments
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
 import com.example.appxemphim.adapters.MovieAdapter
+import com.example.appxemphim.databinding.DialogBuyMovieBinding
 import com.example.appxemphim.databinding.FragmentHomeBinding
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
@@ -132,12 +136,17 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         phimLeAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
-                var b: Bundle = Bundle()
-                b.putInt("movieId", movieId)
-                val phimFragment = PhimFragment()
-                phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment)
+            override fun onItemClick(movieId: Int,price: Int) {
+                if (price == 0) {
+                    var b: Bundle = Bundle()
+                    b.putInt("movieId", movieId)
+                    val phimFragment = PhimFragment()
+                    phimFragment.arguments = b
+                    (activity as MainActivity).replaceFragment(phimFragment)
+                }
+                else{
+                    openBuyMovieDialog(movieId,price)
+                }
             }
 
         })
@@ -149,15 +158,17 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         phimBoAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
-//                var b: Bundle= Bundle()
-//                b.putInt("movieId",movieId)
-//                findNavController().navigate(R.id.action_homeFragment_to_phimFragment,b)
-                var b: Bundle = Bundle()
-                b.putInt("movieId", movieId)
-                val phimFragment = PhimFragment()
-                phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment)
+            override fun onItemClick(movieId: Int,price: Int) {
+                if (price == 0) {
+                    var b: Bundle = Bundle()
+                    b.putInt("movieId", movieId)
+                    val phimFragment = PhimFragment()
+                    phimFragment.arguments = b
+                    (activity as MainActivity).replaceFragment(phimFragment)
+                }
+                else{
+                    openBuyMovieDialog(movieId,price)
+                }
 
             }
 
@@ -167,16 +178,36 @@ class HomeFragment : Fragment() {
         binding.rvPhimMoi.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         phimMoiAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
-                var b: Bundle = Bundle()
-                b.putInt("movieId", movieId)
-                val phimFragment = PhimFragment()
-                phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment)
+            override fun onItemClick(movieId: Int,price: Int) {
 
+
+                if (price == 0) {
+                    var b: Bundle = Bundle()
+                    b.putInt("movieId", movieId)
+                    val phimFragment = PhimFragment()
+                    phimFragment.arguments = b
+                    (activity as MainActivity).replaceFragment(phimFragment)
+                }
+                else{
+                    openBuyMovieDialog(movieId,price)
+                }
             }
 
         })
+
+    }
+
+    fun openBuyMovieDialog(movieId: Int, price: Int) {
+        val dialogBuyMovieBinding: DialogBuyMovieBinding =
+            DialogBuyMovieBinding.inflate(layoutInflater)
+
+        val mDialog =
+            AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root).setTitle("Cập Nhật ")
+                .create()
+        mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        mDialog.show()
+        // mDialog.dismiss()
 
     }
 

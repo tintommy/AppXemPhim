@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
+import com.example.appxemphim.adapters.CommentAdapter
 import com.example.appxemphim.adapters.EpisodeAdapter
 import com.example.appxemphim.adapters.MovieAdapter
 import com.example.appxemphim.adapters.PersonAdapter
@@ -32,6 +33,7 @@ import com.google.android.exoplayer2.MediaItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @AndroidEntryPoint
 class PhimFragment : Fragment() {
@@ -44,9 +46,18 @@ class PhimFragment : Fragment() {
     private lateinit var episodeAdapter: EpisodeAdapter
     private lateinit var personAdapter: PersonAdapter
     private lateinit var randomMovieAdapter: MovieAdapter
+    private lateinit var commentAdapter: CommentAdapter
     private var phimDaDuocLuu = false
     private var movieId: Int = 0
     private var ratingStar = 5
+    private var pageCmt = 0
+
+    private val calendar = Calendar.getInstance()
+    private var nam = calendar[Calendar.YEAR]
+    private var thang = calendar[Calendar.MONTH] // Tháng bắt đầu từ 0
+
+    private var ngay = calendar[Calendar.DAY_OF_MONTH]
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -174,10 +185,11 @@ class PhimFragment : Fragment() {
             }
         }
         lifecycleScope.launch {
-            commentViewModel.luuBinhLuan.collectLatest { when (it) {
+            commentViewModel.luuBinhLuan.collectLatest {
+                when (it) {
 
-                is Resource.Loading -> {}
-                is Resource.Success -> {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
 
                         Toast.makeText(
                             requireContext(),
@@ -185,15 +197,57 @@ class PhimFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
 
-                }
+                    }
 
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
 
-                else -> {}
-            } }
+                    else -> {}
+                }
+            }
         }
+
+        lifecycleScope.launch {
+            commentViewModel.taiBinhLuan.collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility=View.VISIBLE
+                        binding.tvKoCmt.visibility= View.GONE
+
+                    }
+                    is Resource.Success -> {
+
+                        commentAdapter.differ.submitList(it.data)
+                        if (pageCmt == 0) {
+                            binding.btnCmtBefore.visibility = View.GONE
+                        } else {
+                            binding.btnCmtBefore.visibility = View.VISIBLE
+                        }
+
+                        if (it.data!!.size < 5) {
+                            binding.btnCmtAfter.visibility = View.GONE
+                        } else {
+                            binding.btnCmtAfter.visibility = View.VISIBLE
+                        }
+
+                        if(pageCmt==0 && it.data.size==0){
+                            binding.tvKoCmt.visibility= View.VISIBLE
+                        }
+                        binding.progressBar.visibility=View.GONE
+                    }
+
+                    is Resource.Error -> {
+                        binding.progressBar.visibility=View.GONE
+                        binding.tvKoCmt.visibility= View.VISIBLE
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
 
         binding.btnFullScreen.setOnClickListener {
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -235,15 +289,31 @@ class PhimFragment : Fragment() {
                 binding.etBinhLuan.text.toString().trim(),
                 movieId,
                 ratingStar,
-                "2024-01-01"
+                dinhDangNgayAPI(ngay,thang,nam)
             )
+
+            binding.etBinhLuan.setText("")
+        }
+
+        binding.btnCmtBefore.setOnClickListener {
+            pageCmt -= 1
+            commentViewModel.loadCmt(pageCmt, movieId)
+
+        }
+        binding.btnCmtAfter.setOnClickListener {
+            pageCmt += 1
+            commentViewModel.loadCmt(pageCmt, movieId)
+
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun setUpMovie(movie: Movie) {
+        pageCmt=0
         movieId = movie.movieId
         collectionViewModel.kiemTraPhimDaLuu(movieId)
+        commentViewModel.loadCmt(pageCmt, movieId)
+        movieViewModel.loadPhimNgauNhien()
         binding.apply {
             Glide.with(requireContext()).load(movie.image).into(ivHinh)
             tvTenPhim.text = movie.name
@@ -340,7 +410,7 @@ class PhimFragment : Fragment() {
 
 
         randomMovieAdapter = MovieAdapter()
-        movieViewModel.loadPhimNgauNhien()
+
         binding.rvPhimNgauNhien.apply {
             adapter = randomMovieAdapter
             layoutManager =
@@ -348,11 +418,18 @@ class PhimFragment : Fragment() {
 
         }
         randomMovieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
+            override fun onItemClick(movieId: Int,price: Int) {
                 movieViewModel.loadPhim(movieId)
 
             }
         })
+
+        commentAdapter = CommentAdapter()
+        binding.rvBinhLuan.apply {
+            adapter = commentAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
 
     }
 
@@ -367,5 +444,13 @@ class PhimFragment : Fragment() {
         player.play()
     }
 
-
+    private fun dinhDangNgayAPI(ngay: Int, thang: Int, nam: Int): String {
+        var temp = ""
+        temp += nam
+        temp += "-"
+        temp += if (thang + 1 < 10) "0" + (thang + 1).toString() else (thang + 1).toString()
+        temp += "-"
+        temp += if (ngay < 10) "0$ngay" else ngay.toString()
+        return temp
+    }
 }

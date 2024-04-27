@@ -71,9 +71,8 @@ class UserFragment : Fragment() {
 
 
         Glide.with(requireContext()).load(user.avatar).into(binding.ivAnhUser)
-        binding.tvTenUser.text = user.name
+        binding.tvUsername.text = user.username
         binding.tvTien.text = "$ " + user.money.toString()
-        binding.tvUsername.setText(user.username)
         binding.tvEmail.setText(user.email)
 
         binding.btnDoiMatKhau.setOnClickListener {
@@ -88,6 +87,9 @@ class UserFragment : Fragment() {
 
             dialogChangePassEvent(dialogBinding)
         }
+
+
+
 
     }
 

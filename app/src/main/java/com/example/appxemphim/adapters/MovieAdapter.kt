@@ -44,7 +44,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.moviesViewHolder>() {
 
 
     interface OnItemClickListener {
-        fun onItemClick(movieId: Int)
+        fun onItemClick(movieId: Int, price:Int)
     }
 
     var click: OnItemClickListener? = null
@@ -60,7 +60,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.moviesViewHolder>() {
             binding.tvTenPhim.text=movie.name;
             Glide.with(itemView).load(movie.image.trim()).into(binding.ivAnh)
             itemView.setOnClickListener {
-                click?.onItemClick(movie.movieId)
+                click?.onItemClick(movie.movieId, movie.price)
             }
 
             if(movie.episodes>1){
@@ -70,6 +70,14 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.moviesViewHolder>() {
             }
             else{
                 binding.tvSoTap.visibility=View.GONE
+            }
+
+            if(movie.price>0){
+                binding.layoutTien.visibility=View.VISIBLE
+                binding.tvTien.text= movie.price.toString()
+            }
+            else{
+                binding.layoutTien.visibility=View.GONE
             }
         }
 

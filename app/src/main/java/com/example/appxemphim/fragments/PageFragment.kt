@@ -103,7 +103,7 @@ class PageFragment : Fragment() {
 
         }
         movieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
+            override fun onItemClick(movieId: Int,price: Int) {
                 var b: Bundle = Bundle()
                 b.putInt("movieId", movieId)
                 val phimFragment = PhimFragment()
