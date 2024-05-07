@@ -196,7 +196,8 @@ class PhimFragment : Fragment() {
                             "Đã gửi bình luận",
                             Toast.LENGTH_SHORT
                         ).show()
-
+                        pageCmt=0
+                        commentViewModel.loadCmt(0, movieId)
                     }
 
                     is Resource.Error -> {
@@ -418,8 +419,8 @@ class PhimFragment : Fragment() {
 
         }
         randomMovieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int,price: Int) {
-                movieViewModel.loadPhim(movieId)
+            override fun onItemClick(movie: Movie,price: Int) {
+                movieViewModel.loadPhim(movie.movieId)
 
             }
         })

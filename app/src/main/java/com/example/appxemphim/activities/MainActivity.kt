@@ -7,21 +7,15 @@ import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appxemphim.R
 import com.example.appxemphim.adapters.MovieSearchAdapter
@@ -38,7 +32,9 @@ import com.example.appxemphim.viewModel.MovieViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import vn.zalopay.sdk.ZaloPaySDK
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +43,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     public lateinit var binding: ActivityMainBinding
     private lateinit var movieSearchAdapter: MovieSearchAdapter
     private val movieViewModel by viewModels<MovieViewModel>()
+
+    object muaPhim {
+        var thanhToan=false
+        lateinit var phim:Movie
+    }
 
     var querySearch: String = ""
     val delayTime: Long = 700
@@ -295,4 +296,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.e("MyTag", "on resume")
+         if(muaPhim.thanhToan==true){
+             muaPhim.thanhToan=false
+             var b: Bundle = Bundle()
+             b.putInt("movieId", muaPhim.phim.movieId)
+             val phimFragment = PhimFragment()
+             phimFragment.arguments = b
+             replaceFragment(phimFragment)
+         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+       // Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show()
+    }
 }

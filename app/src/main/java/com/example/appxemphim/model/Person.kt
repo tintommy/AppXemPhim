@@ -2,6 +2,7 @@ package com.example.appxemphim.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Person(
     @SerializedName("country")
@@ -20,4 +21,4 @@ data class Person(
     val name: String,
     @SerializedName("personId")
     val personId: Int
-)
+):Serializable
