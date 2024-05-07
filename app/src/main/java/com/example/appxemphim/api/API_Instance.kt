@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class API_Instance {
     companion object {
 
-        val BASE_URL = "http://192.168.30.105:8080/"
+        val BASE_URL = "http://192.168.1.7:8080/"
 
         fun getClient(authToken: String): Retrofit {
             val httpClient = OkHttpClient.Builder()

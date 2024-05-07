@@ -47,6 +47,10 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.8.0")
+    implementation(fileTree(mapOf(
+        "dir" to "D:\\zalopay",
+        "include" to listOf("*.aar", "*.jar")
+    )))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -76,12 +80,13 @@ dependencies {
     //circle image
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    //VNPAY
-
+    //vnpay
     implementation("com.google.code.gson:gson:2.8.5")
-    implementation("com.squareup.okhttp3:okhttp:3.14.1")
     implementation(files("libs/merchant-1.0.25.aar"))
 
+    //zalopay
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
 
 }
 kapt {

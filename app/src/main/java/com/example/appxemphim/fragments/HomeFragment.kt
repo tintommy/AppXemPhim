@@ -1,31 +1,36 @@
 package com.example.appxemphim.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
+import com.example.appxemphim.activities.ThanhToanActivity
 import com.example.appxemphim.adapters.MovieAdapter
 import com.example.appxemphim.databinding.DialogBuyMovieBinding
 import com.example.appxemphim.databinding.FragmentHomeBinding
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.MovieViewModel
+import com.example.appxemphim.zalopay.CreateOrder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import vn.zalopay.sdk.Environment
+import vn.zalopay.sdk.ZaloPayError
+import vn.zalopay.sdk.ZaloPaySDK
+import vn.zalopay.sdk.listeners.PayOrderListener
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -40,6 +45,15 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        // ZaloPay SDK Init
+        ZaloPaySDK.init(2554, Environment.SANDBOX)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -136,16 +150,15 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         phimLeAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int,price: Int) {
+            override fun onItemClick(movie: Movie, price: Int) {
                 if (price == 0) {
                     var b: Bundle = Bundle()
-                    b.putInt("movieId", movieId)
+                    b.putInt("movieId", movie.movieId)
                     val phimFragment = PhimFragment()
                     phimFragment.arguments = b
                     (activity as MainActivity).replaceFragment(phimFragment)
-                }
-                else{
-                    openBuyMovieDialog(movieId,price)
+                } else {
+                    openBuyMovieDialog(movie, price)
                 }
             }
 
@@ -158,16 +171,15 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         phimBoAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int,price: Int) {
+            override fun onItemClick(movie: Movie, price: Int) {
                 if (price == 0) {
                     var b: Bundle = Bundle()
-                    b.putInt("movieId", movieId)
+                    b.putInt("movieId", movie.movieId)
                     val phimFragment = PhimFragment()
                     phimFragment.arguments = b
                     (activity as MainActivity).replaceFragment(phimFragment)
-                }
-                else{
-                    openBuyMovieDialog(movieId,price)
+                } else {
+                    openBuyMovieDialog(movie, price)
                 }
 
             }
@@ -178,18 +190,17 @@ class HomeFragment : Fragment() {
         binding.rvPhimMoi.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         phimMoiAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int,price: Int) {
+            override fun onItemClick(movie: Movie, price: Int) {
 
 
                 if (price == 0) {
                     var b: Bundle = Bundle()
-                    b.putInt("movieId", movieId)
+                    b.putInt("movieId", movie.movieId)
                     val phimFragment = PhimFragment()
                     phimFragment.arguments = b
                     (activity as MainActivity).replaceFragment(phimFragment)
-                }
-                else{
-                    openBuyMovieDialog(movieId,price)
+                } else {
+                    openBuyMovieDialog(movie, price)
                 }
             }
 
@@ -197,18 +208,29 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun openBuyMovieDialog(movieId: Int, price: Int) {
+    fun openBuyMovieDialog(movie: Movie, price: Int) {
         val dialogBuyMovieBinding: DialogBuyMovieBinding =
             DialogBuyMovieBinding.inflate(layoutInflater)
 
         val mDialog =
-            AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root).setTitle("Cập Nhật ")
+            AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root)
                 .create()
         mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
+        dialogBuyMovieBinding.tvMoneyPrice.text = price.toString()
         mDialog.show()
         // mDialog.dismiss()
 
+
+        dialogBuyMovieBinding.btnConfirm.setOnClickListener {
+            val intent = Intent(requireActivity(), ThanhToanActivity::class.java)
+            intent.putExtra("movie", movie)
+            startActivity(intent)
+            mDialog.dismiss()
+        }
     }
+
+
+
+
 
 }
