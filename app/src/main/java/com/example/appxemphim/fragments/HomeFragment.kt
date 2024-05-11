@@ -25,7 +25,11 @@ import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.MovieViewModel
 import com.example.appxemphim.zalopay.CreateOrder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK
@@ -39,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var phimLeAdapter: MovieAdapter
     private lateinit var phimBoAdapter: MovieAdapter
     private lateinit var phimMoiAdapter: MovieAdapter
+    private lateinit var selectedMovie: Movie
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,7 +87,11 @@ class HomeFragment : Fragment() {
             }
 
 
+
         }
+
+
+
         lifecycleScope.launchWhenStarted {
             movieViewModel.phimBo.collectLatest {
                 when (it) {
@@ -124,6 +133,38 @@ class HomeFragment : Fragment() {
         }
 
 
+        lifecycleScope.launch {
+            movieViewModel.existBuyMovie.collectLatest {
+                when (it) {
+
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility= View.VISIBLE
+
+                    }
+                    is Resource.Success -> {
+                        binding.progressBar.visibility= View.GONE
+                        if(!it.data!!){
+                           openBuyMovieDialog(selectedMovie)
+                        }
+                        else{
+                            var b: Bundle = Bundle()
+                            b.putInt("movieId", selectedMovie.movieId)
+                            val phimFragment = PhimFragment()
+                            phimFragment.arguments = b
+                            (activity as MainActivity).replaceFragment(phimFragment)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
+
         binding.tvPhimLe.setOnClickListener {
             var b: Bundle = Bundle()
             b.putInt("categoryId", 1)
@@ -133,14 +174,24 @@ class HomeFragment : Fragment() {
             (activity as MainActivity).replaceFragment(pageFragment)
         }
         binding.tvPhimBo.setOnClickListener {
-            var b: Bundle = Bundle()
-            b.putInt("categoryId", 2)
-            b.putString("categoryName", "Phim bộ")
-            val pageFragment = PageFragment()
-            pageFragment.arguments = b
-            (activity as MainActivity).replaceFragment(pageFragment)
+
+
+            CoroutineScope(Dispatchers.IO).launch {
+                if (movieViewModel.performTask()){
+                    withContext(Dispatchers.Main){
+                    Toast.makeText(requireContext(), "abc", Toast.LENGTH_SHORT).show()
+                        var b: Bundle = Bundle()
+                        b.putInt("categoryId", 2)
+                        b.putString("categoryName", "Phim bộ")
+                        val pageFragment = PageFragment()
+                        pageFragment.arguments = b
+                        (activity as MainActivity).replaceFragment(pageFragment)
+                }}
+            }
+
 
         }
+
     }
 
     private fun initAdapter() {
@@ -151,15 +202,7 @@ class HomeFragment : Fragment() {
 
         phimLeAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movie: Movie, price: Int) {
-                if (price == 0) {
-                    var b: Bundle = Bundle()
-                    b.putInt("movieId", movie.movieId)
-                    val phimFragment = PhimFragment()
-                    phimFragment.arguments = b
-                    (activity as MainActivity).replaceFragment(phimFragment)
-                } else {
-                    openBuyMovieDialog(movie, price)
-                }
+                checkMovie(movie, price)
             }
 
         })
@@ -172,16 +215,7 @@ class HomeFragment : Fragment() {
 
         phimBoAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movie: Movie, price: Int) {
-                if (price == 0) {
-                    var b: Bundle = Bundle()
-                    b.putInt("movieId", movie.movieId)
-                    val phimFragment = PhimFragment()
-                    phimFragment.arguments = b
-                    (activity as MainActivity).replaceFragment(phimFragment)
-                } else {
-                    openBuyMovieDialog(movie, price)
-                }
-
+                checkMovie(movie, price)
             }
 
         })
@@ -192,23 +226,14 @@ class HomeFragment : Fragment() {
         phimMoiAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movie: Movie, price: Int) {
 
-
-                if (price == 0) {
-                    var b: Bundle = Bundle()
-                    b.putInt("movieId", movie.movieId)
-                    val phimFragment = PhimFragment()
-                    phimFragment.arguments = b
-                    (activity as MainActivity).replaceFragment(phimFragment)
-                } else {
-                    openBuyMovieDialog(movie, price)
-                }
+                checkMovie(movie, price)
             }
 
         })
 
     }
 
-    fun openBuyMovieDialog(movie: Movie, price: Int) {
+    fun openBuyMovieDialog(movie: Movie) {
         val dialogBuyMovieBinding: DialogBuyMovieBinding =
             DialogBuyMovieBinding.inflate(layoutInflater)
 
@@ -216,7 +241,7 @@ class HomeFragment : Fragment() {
             AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root)
                 .create()
         mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogBuyMovieBinding.tvMoneyPrice.text = price.toString()
+        dialogBuyMovieBinding.tvMoneyPrice.text = movie.price.toString()
         mDialog.show()
         // mDialog.dismiss()
 
@@ -230,7 +255,25 @@ class HomeFragment : Fragment() {
     }
 
 
+    fun checkMovie(movie: Movie, price: Int) {
+        selectedMovie=movie
 
+
+        if(price>0)
+        {
+        movieViewModel.checkExistMovieBuy(selectedMovie)
+
+        }
+
+        else{
+            var b: Bundle = Bundle()
+            b.putInt("movieId", selectedMovie.movieId)
+            val phimFragment = PhimFragment()
+            phimFragment.arguments = b
+            (activity as MainActivity).replaceFragment(phimFragment)
+        }
+
+    }
 
 
 }

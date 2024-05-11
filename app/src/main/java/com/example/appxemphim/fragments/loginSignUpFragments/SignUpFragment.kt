@@ -45,7 +45,7 @@ class SignUpFragment : Fragment() {
                     }
 
                     is Resource.Success -> {
-                        if (it.data!!.status == true) {
+                        if (it.data!! == true) {
                         } else {
                             Toast.makeText(
                                 requireContext(),

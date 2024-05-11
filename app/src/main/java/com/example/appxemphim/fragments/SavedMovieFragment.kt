@@ -42,17 +42,20 @@ class SavedMovieFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        binding.tvTrong.visibility=View.GONE
                     }
 
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.tvTrong.visibility=View.GONE
                         collectionAdapter.differ.submitList(it.data)
 
                     }
 
                     is Resource.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        binding.tvTrong.visibility=View.VISIBLE
+
                     }
 
                     else -> {}
@@ -66,7 +69,7 @@ class SavedMovieFragment : Fragment() {
     private fun initAdapter() {
         collectionAdapter = CollectionAdapter()
         binding.rvPhim.adapter = collectionAdapter
-        binding.rvPhim.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvPhim.layoutManager = GridLayoutManager(requireContext(), 3)
         collectionAdapter.setOnItemClickListener(object : CollectionAdapter.OnItemClickListener{
             override fun onItemClick(movieId: Int) {
                 var b: Bundle = Bundle()

@@ -22,6 +22,7 @@ import com.example.appxemphim.adapters.MovieSearchAdapter
 import com.example.appxemphim.databinding.ActivityMainBinding
 import com.example.appxemphim.fragments.DanhMucFragment
 import com.example.appxemphim.fragments.HomeFragment
+import com.example.appxemphim.fragments.MovieBoughtFragment
 import com.example.appxemphim.fragments.PageFragment
 import com.example.appxemphim.fragments.PhimFragment
 import com.example.appxemphim.fragments.SavedMovieFragment
@@ -187,7 +188,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_phimDaMua -> {
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show()
+                val movieBoughtFragment = MovieBoughtFragment()
+                replaceFragment(movieBoughtFragment)
 
             }
 

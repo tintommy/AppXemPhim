@@ -123,7 +123,7 @@ class PhimFragment : Fragment() {
 
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        phimDaDuocLuu = it.data!!.status
+                        phimDaDuocLuu = it.data!!
                         if (phimDaDuocLuu) {
                             binding.btnLuuPhim.setImageResource(R.drawable.baseline_favorite_24)
                         } else {
@@ -165,7 +165,7 @@ class PhimFragment : Fragment() {
 
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        if (it.data!!.status) {
+                        if (it.data!!) {
                             phimDaDuocLuu = false
                             binding.btnLuuPhim.setImageResource(R.drawable.baseline_favorite_border_24)
                             Toast.makeText(

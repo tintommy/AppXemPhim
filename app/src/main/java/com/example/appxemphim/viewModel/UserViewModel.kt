@@ -5,7 +5,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appxemphim.api.API_Instance
+import com.example.appxemphim.api.apiService.BuyMovieApiService
 import com.example.appxemphim.api.apiService.UserApiService
+import com.example.appxemphim.model.Movie
+import com.example.appxemphim.model.MovieBuy
 import com.example.appxemphim.request.ChangePassRequest
 import com.example.appxemphim.request.SignInRequest
 import com.example.appxemphim.model.Token
@@ -14,7 +17,9 @@ import com.example.appxemphim.request.SignUpRequest
 import com.example.appxemphim.request.Status
 import com.example.appxemphim.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,17 +31,19 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
     private lateinit var username: String
     private lateinit var userService: UserApiService
 
-    private val _login = MutableStateFlow<Resource<Token>>(Resource.Unspecified())
+
+    private val _login = MutableStateFlow<Resource<String>>(Resource.Unspecified())
     val login = _login.asStateFlow()
 
-    private val _signup = MutableStateFlow<Resource<Status>>(Resource.Unspecified())
+    private val _signup = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val signup = _signup.asStateFlow()
 
     private val _user = MutableStateFlow<Resource<User>>(Resource.Unspecified())
     val user = _user.asStateFlow()
 
-    private val _changePass = MutableStateFlow<Resource<Status>>(Resource.Unspecified())
+    private val _changePass = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val changePass = _changePass.asStateFlow()
+
 
 
     init {
@@ -56,7 +63,7 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
             _user.emit(Resource.Loading())
             val response = userService.getUser(username)
             if (response.isSuccessful) {
-                _user.emit(Resource.Success(response.body()!!))
+                _user.emit(Resource.Success(response.body()!!.data))
 
             } else {
                 _user.emit(Resource.Error("Lỗi khi lấy user"))
@@ -74,9 +81,9 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
             val response = userService.userLogin(signInRequest)
             if (response.isSuccessful) {
-                _login.emit(Resource.Success(response.body()!!))
+                _login.emit(Resource.Success(response.body()!!.data))
                 val editor = sharedPref.edit()
-                editor.putString("token", response.body()!!.token)
+                editor.putString("token", response.body()!!.data)
                 editor.putString("username", username)
                 editor.apply()
 
@@ -101,9 +108,9 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
             val changePassResponse = changePassRequest?.let { userService.userChangePass(it) }
             if (changePassResponse!!.isSuccessful) {
 
-                if (changePassResponse.body()!!.status)
-                    _changePass.emit(Resource.Success(changePassResponse.body()!!))
-                else if (!changePassResponse.body()!!.status) {
+                if (changePassResponse.body()!!.data)
+                    _changePass.emit(Resource.Success(changePassResponse.body()!!.data))
+                else if (!changePassResponse.body()!!.data) {
                     _changePass.emit(Resource.Error("false"))
                 }
             } else {
@@ -120,7 +127,7 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
             _signup.emit(Resource.Loading())
             val response = userService.userSignup(signUpRequest)
             if (response.isSuccessful)
-                _signup.emit(Resource.Success(response.body()!!))
+                _signup.emit(Resource.Success(response.body()!!.data))
             else {
                 _signup.emit(Resource.Error("Lỗi khi đăng kí"))
 
@@ -129,6 +136,8 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
         }
 
     }
+
+
 
 }
 

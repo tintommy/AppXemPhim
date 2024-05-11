@@ -45,7 +45,7 @@ class CategoryCountryViewModel @Inject constructor(private var sharedPref: Share
 
             val response= categoryCountryApiService.getAllCategory()
             if (response.isSuccessful){
-                _category.emit(Resource.Success(response.body()!!))
+                _category.emit(Resource.Success(response.body()!!.data))
             }
             else{
                 _category.emit(Resource.Error("Lỗi khi load category"))
@@ -59,7 +59,7 @@ class CategoryCountryViewModel @Inject constructor(private var sharedPref: Share
 
             val response= categoryCountryApiService.getAllCountry()
             if (response.isSuccessful){
-                _country.emit(Resource.Success(response.body()!!))
+                _country.emit(Resource.Success(response.body()!!.data))
             }
             else{
                 _country.emit(Resource.Error("Lỗi khi load country"))

@@ -25,10 +25,10 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
     private val _luuPhim = MutableStateFlow<Resource<Collection>>(Resource.Unspecified())
     val luuPhim = _luuPhim.asStateFlow()
 
-    private val _xoaPhim = MutableStateFlow<Resource<Status>>(Resource.Unspecified())
+    private val _xoaPhim = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val xoaPhim = _xoaPhim.asStateFlow()
 
-    private val _phimDaLuu = MutableStateFlow<Resource<Status>>(Resource.Unspecified())
+    private val _phimDaLuu = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val phimDaLuu = _phimDaLuu.asStateFlow()
     private val _tatCaPhim = MutableStateFlow<Resource<List<Collection>>>(Resource.Unspecified())
     val tatCaPhim = _tatCaPhim.asStateFlow()
@@ -52,7 +52,7 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
             val response = collectionService.saveMovieCollection(collection);
 
             if (response.isSuccessful) {
-                _luuPhim.emit(Resource.Success(response.body()!!))
+                _luuPhim.emit(Resource.Success(response.body()!!.data))
             } else {
                 _luuPhim.emit(Resource.Error("Có lỗi xảy ra khi lưu phim"))
             }
@@ -68,7 +68,7 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
             val response = collectionService.deleteCollection(movieId, username);
 
             if (response.isSuccessful) {
-                _xoaPhim.emit(Resource.Success(response.body()!!))
+                _xoaPhim.emit(Resource.Success(response.body()!!.data))
             } else {
                 _xoaPhim.emit(Resource.Error("Có lỗi xảy ra khi xoá phim"))
             }
@@ -81,7 +81,7 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
         viewModelScope.launch {
             val response = collectionService.checkExistCollection(movieId, username)
             if (response.isSuccessful) {
-                _phimDaLuu.emit(Resource.Success(response.body()!!))
+                _phimDaLuu.emit(Resource.Success(response.body()!!.data))
             } else {
                 _phimDaLuu.emit(Resource.Error("Có lỗi xảy ra "))
             }
@@ -93,7 +93,7 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
             _tatCaPhim.emit(Resource.Loading())
             val response = collectionService.getAllCollection(username)
             if (response.isSuccessful) {
-                _tatCaPhim.emit(Resource.Success(response.body()!!))
+                _tatCaPhim.emit(Resource.Success(response.body()!!.data))
             } else {
                 _tatCaPhim.emit(Resource.Error("Có lỗi xảy ra "))
             }
