@@ -16,6 +16,7 @@ import com.example.appxemphim.activities.MainActivity
 import com.example.appxemphim.adapters.MovieAdapter
 import com.example.appxemphim.adapters.PageAdapter
 import com.example.appxemphim.databinding.FragmentPageBinding
+import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,9 +104,9 @@ class PageFragment : Fragment() {
 
         }
         movieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int,price: Int) {
+            override fun onItemClick(movie: Movie,price: Int) {
                 var b: Bundle = Bundle()
-                b.putInt("movieId", movieId)
+                b.putInt("movieId", movie.movieId)
                 val phimFragment = PhimFragment()
                 phimFragment.arguments = b
                 (activity as MainActivity).replaceFragment(phimFragment)

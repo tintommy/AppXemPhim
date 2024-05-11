@@ -44,7 +44,7 @@ class CommentViewModel @Inject constructor(private val sharedPref: SharedPrefere
             _luuBinhLuan.emit(Resource.Loading())
             val response = commentApiService.saveMovieComment(comment)
             if (response.isSuccessful) {
-                _luuBinhLuan.emit(Resource.Success(response.body()!!))
+                _luuBinhLuan.emit(Resource.Success(response.body()!!.data))
             } else {
                 _luuBinhLuan.emit(Resource.Error("Xảy ra lỗi khi lưu bình luận"))
 
@@ -57,7 +57,7 @@ class CommentViewModel @Inject constructor(private val sharedPref: SharedPrefere
             _taiBinhLuan.emit(Resource.Loading())
             val reponse = commentApiService.getPageComment(offset,5,movieId)
             if(reponse.isSuccessful){
-                _taiBinhLuan.emit(Resource.Success(reponse.body()!!))
+                _taiBinhLuan.emit(Resource.Success(reponse.body()!!.data))
             }
             else{
 

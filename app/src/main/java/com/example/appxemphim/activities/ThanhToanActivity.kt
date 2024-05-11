@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,6 +17,7 @@ import com.example.appxemphim.R
 import com.example.appxemphim.databinding.ActivityThanhToanBinding
 import com.example.appxemphim.fragments.PhimFragment
 import com.example.appxemphim.model.Movie
+import com.example.appxemphim.viewModel.MovieViewModel
 import com.example.appxemphim.zalopay.CreateOrder
 import com.vnpay.authentication.VNP_AuthenticationActivity
 import com.vnpay.authentication.VNP_SdkCompletedCallback
@@ -23,11 +25,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK
 import vn.zalopay.sdk.listeners.PayOrderListener
+import java.util.Calendar
 
 @AndroidEntryPoint
 class ThanhToanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityThanhToanBinding
     private lateinit var movie: Movie
+    private val movieViewModel by viewModels<MovieViewModel>()
+    private val calendar = Calendar.getInstance()
+    private var nam = calendar[Calendar.YEAR]
+    private var thang = calendar[Calendar.MONTH] // Tháng bắt đầu từ 0
+
+    private var ngay = calendar[Calendar.DAY_OF_MONTH]
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -46,6 +55,7 @@ class ThanhToanActivity : AppCompatActivity() {
                 finish()
             }
             binding.btnConfirm.setOnClickListener {
+                binding.progressBar.visibility=View.VISIBLE
                 requestZalo(movie)
             }
 //            binding.btnConfirmVnPay.setOnClickListener {
@@ -60,6 +70,7 @@ class ThanhToanActivity : AppCompatActivity() {
         ZaloPaySDK.getInstance().onResult(intent)
     }
     private fun requestZalo(movie: Movie) {
+        binding.progressBar.visibility=View.GONE
         val orderApi = CreateOrder()
 
         try {
@@ -82,7 +93,7 @@ class ThanhToanActivity : AppCompatActivity() {
                             appTransID: String?
                         ) {
                             Toast.makeText(this@ThanhToanActivity, "Mời bạn xem phim", Toast.LENGTH_LONG).show()
-
+                                movieViewModel.userBuyMovie(movie,dinhDangNgayAPI(ngay, thang, nam))
 //                            var b: Bundle = Bundle()
 //                            b.putInt("movieId", movie.movieId)
 //                            val phimFragment = PhimFragment()
@@ -144,5 +155,13 @@ class ThanhToanActivity : AppCompatActivity() {
 ////        })
 //        startActivity(intent)
 //    }
-
+private fun dinhDangNgayAPI(ngay: Int, thang: Int, nam: Int): String {
+    var temp = ""
+    temp += nam
+    temp += "-"
+    temp += if (thang + 1 < 10) "0" + (thang + 1).toString() else (thang + 1).toString()
+    temp += "-"
+    temp += if (ngay < 10) "0$ngay" else ngay.toString()
+    return temp
+}
 }
