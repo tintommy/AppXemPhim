@@ -30,8 +30,9 @@ class SplashScreenActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash_screen)
         sharedPref = application.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
-        handler.postDelayed({
-            userViewModel.getUser()
+
+   handler.postDelayed({
+        userViewModel.getUser()
             lifecycleScope.launchWhenStarted {
                 userViewModel.user.collectLatest {
                     when (it) {
@@ -48,6 +49,7 @@ class SplashScreenActivity : AppCompatActivity() {
                                 MainActivity::class.java
                             ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
+                            finish()
 
                         }
 
@@ -61,6 +63,7 @@ class SplashScreenActivity : AppCompatActivity() {
                                 LoginSignUpActivity::class.java
                             ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
+                            finish()
 
                         }
 
@@ -69,8 +72,8 @@ class SplashScreenActivity : AppCompatActivity() {
                 }
 
             }
-            finish()
-        }, 1500)
+
+      }, 1500)
     }
 
 }

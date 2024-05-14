@@ -49,11 +49,26 @@
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@id/tvEmail" />
 
+    <TextView
+        android:id="@+id/tvSai"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/etOTP"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        android:text="Mã OTP không đúng"
+        android:textStyle="bold"
+        android:textSize="10sp"
+        android:layout_marginTop="5dp"
+        android:textColor="#FFEB3B"
+        android:visibility="invisible"
+        />
+
     <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
         android:id="@+id/btnConfirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/rectangle_button"
         android:backgroundTint="#FF0000"
         android:text="Xác nhận"
@@ -63,7 +78,7 @@
         android:padding="0dp"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@id/etOTP" />
+        app:layout_constraintTop_toBottomOf="@id/tvSai" />
 
     <TextView
         android:id="@+id/btnReOTP"

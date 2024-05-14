@@ -9,40 +9,60 @@
     tools:context=".fragments.PhimFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutPhimLe"
+        android:id="@+id/layoutPhim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black">
+<com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+    android:id="@+id/videoRatioLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:resize_mode="fixed_width"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    >
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/videoPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
 
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-            android:id="@+id/videoPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/ivError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/video_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivError"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/video_error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+</com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
 
-        <Button
+
+
+        <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/btnFullScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="100dp"
-            android:text="click"
-            app:layout_constraintEnd_toEndOf="@id/videoPlayer"
-            app:layout_constraintStart_toStartOf="@id/videoPlayer"
-            app:layout_constraintTop_toBottomOf="@id/videoPlayer" />
+            android:text="Xem toàn màn hình"
+            android:drawableLeft="@drawable/baseline_fullscreen_24"
+            android:textColor="#A4FFFFFF"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:drawableTint="#A4FFFFFF"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rectangle_button"
+            android:backgroundTint="#00000000"
+            android:textAlignment="textStart"
+            app:layout_constraintStart_toStartOf="@id/leftLine"
+            app:layout_constraintTop_toBottomOf="@id/videoRatioLayout" />
 
         <LinearLayout
             android:id="@+id/linearPhim"

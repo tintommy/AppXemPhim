@@ -44,7 +44,8 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
     private val _changePass = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val changePass = _changePass.asStateFlow()
 
-
+    private val _verify = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
+    val verify = _verify.asStateFlow()
 
     init {
         initApiService()
@@ -120,24 +121,43 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
         }
     }
 
-    fun userSignUp(username: String, password: String, email: String) {
+    fun userSignUp(signUpRequest: SignUpRequest) {
         viewModelScope.launch {
-            val signUpRequest = SignUpRequest(username, password, email, 1)
-
             _signup.emit(Resource.Loading())
             val response = userService.userSignup(signUpRequest)
+
+
             if (response.isSuccessful)
-                _signup.emit(Resource.Success(response.body()!!.data))
-            else {
-                _signup.emit(Resource.Error("Lỗi khi đăng kí"))
+                _signup.emit(Resource.Success(true))
+
+            if (!response.isSuccessful) {
+                if (response.code() == 409) {
+                    _signup.emit(Resource.Success(false))
+                } else {
+                    _signup.emit(Resource.Error("Lỗi khi đăng kí"))
+
+                }
+            }
+        }
+
+    }
+
+    fun userVerify(signUpRequest: SignUpRequest, otp: String) {
+        viewModelScope.launch {
+            _verify.emit(Resource.Loading())
+            val response =
+                userService.userVerify(signUpRequest.email, otp, "", "1")
+            if (response.isSuccessful) {
+                _verify.emit(Resource.Success(response.body()!!.data))
+                Log.e("OTP", response.body()!!.data.toString())
+            } else {
+                _verify.emit(Resource.Error("Lỗi khi đăng kí"))
 
             }
 
         }
 
     }
-
-
 
 }
 

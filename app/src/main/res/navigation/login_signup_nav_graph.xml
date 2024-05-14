@@ -30,5 +30,17 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_signUpFragment_to_otpVerifyFragment"
+            app:destination="@id/otpVerifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otpVerifyFragment"
+        android:name="com.example.appxemphim.fragments.loginSignUpFragments.OtpVerifyFragment"
+        android:label="fragment_otp_verify"
+        tools:layout="@layout/fragment_otp_verify" >
+        <action
+            android:id="@+id/action_otpVerifyFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>
