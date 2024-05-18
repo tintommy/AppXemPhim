@@ -1,16 +1,16 @@
 package com.example.appxemphim.fragments
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+
 @AndroidEntryPoint
 class PhimFragment : Fragment() {
 
@@ -58,6 +59,8 @@ class PhimFragment : Fragment() {
 
     private var ngay = calendar[Calendar.DAY_OF_MONTH]
 
+    private lateinit var fullScreenDialog: Dialog
+    private var fullscreen = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,9 +73,9 @@ class PhimFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onBackPressed()
-
-
+        //onBackPressed()
+        iniFullScreenDialog()
+        binding.videoRatioLayout.setAspectRatio(16f/9f)
         var bundle = arguments
         if (bundle != null) {
             movieId = bundle.getInt("movieId")
@@ -196,7 +199,7 @@ class PhimFragment : Fragment() {
                             "Đã gửi bình luận",
                             Toast.LENGTH_SHORT
                         ).show()
-                        pageCmt=0
+                        pageCmt = 0
                         commentViewModel.loadCmt(0, movieId)
                     }
 
@@ -213,10 +216,11 @@ class PhimFragment : Fragment() {
             commentViewModel.taiBinhLuan.collectLatest {
                 when (it) {
                     is Resource.Loading -> {
-                        binding.progressBar.visibility=View.VISIBLE
-                        binding.tvKoCmt.visibility= View.GONE
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.tvKoCmt.visibility = View.GONE
 
                     }
+
                     is Resource.Success -> {
 
                         commentAdapter.differ.submitList(it.data)
@@ -232,15 +236,15 @@ class PhimFragment : Fragment() {
                             binding.btnCmtAfter.visibility = View.VISIBLE
                         }
 
-                        if(pageCmt==0 && it.data.size==0){
-                            binding.tvKoCmt.visibility= View.VISIBLE
+                        if (pageCmt == 0 && it.data.size == 0) {
+                            binding.tvKoCmt.visibility = View.VISIBLE
                         }
-                        binding.progressBar.visibility=View.GONE
+                        binding.progressBar.visibility = View.GONE
                     }
 
                     is Resource.Error -> {
-                        binding.progressBar.visibility=View.GONE
-                        binding.tvKoCmt.visibility= View.VISIBLE
+                        binding.progressBar.visibility = View.GONE
+                        binding.tvKoCmt.visibility = View.VISIBLE
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
 
@@ -251,24 +255,8 @@ class PhimFragment : Fragment() {
 
 
         binding.btnFullScreen.setOnClickListener {
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-
-            }
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-
-                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-                val layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    230
-                )
-
-
-                binding.videoPlayer.layoutParams = layoutParams
-            }
+            openFullscreenDialog()
 
         }
 
@@ -290,7 +278,7 @@ class PhimFragment : Fragment() {
                 binding.etBinhLuan.text.toString().trim(),
                 movieId,
                 ratingStar,
-                dinhDangNgayAPI(ngay,thang,nam)
+                dinhDangNgayAPI(ngay, thang, nam)
             )
 
             binding.etBinhLuan.setText("")
@@ -310,7 +298,7 @@ class PhimFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setUpMovie(movie: Movie) {
-        pageCmt=0
+        pageCmt = 0
         movieId = movie.movieId
         collectionViewModel.kiemTraPhimDaLuu(movieId)
         commentViewModel.loadCmt(pageCmt, movieId)
@@ -328,6 +316,7 @@ class PhimFragment : Fragment() {
                 videoPlayer.visibility = View.VISIBLE
                 ivError.visibility = View.GONE
             } else {
+                player.stop()
                 videoPlayer.visibility = View.INVISIBLE
                 ivError.visibility = View.VISIBLE
             }
@@ -419,7 +408,7 @@ class PhimFragment : Fragment() {
 
         }
         randomMovieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
-            override fun onItemClick(movie: Movie,price: Int) {
+            override fun onItemClick(movie: Movie, price: Int) {
                 movieViewModel.loadPhim(movie.movieId)
 
             }
@@ -444,6 +433,63 @@ class PhimFragment : Fragment() {
         player.prepare()
         player.play()
     }
+
+    fun iniFullScreenDialog() {
+        fullScreenDialog =
+            object : Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+                override fun onBackPressed() {
+                    if (fullscreen) {
+                        closeFullscreenDialog()
+                    }
+                    super.onBackPressed()
+                }
+            }
+
+    }
+
+    private fun closeFullscreenDialog() {
+
+
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        val parentView = binding.videoPlayer.parent as ViewGroup
+        parentView.removeView(binding.videoPlayer)
+        binding.videoRatioLayout.addView(binding.videoPlayer)
+        fullscreen = false
+        fullScreenDialog.dismiss()
+
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+
+    }
+
+    private fun openFullscreenDialog() {
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        val parentView = binding.videoPlayer.parent as ViewGroup
+        parentView.removeView(binding.videoPlayer)
+        fullScreenDialog.addContentView(
+            binding.videoPlayer,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+        fullscreen = true
+        fullScreenDialog.show()
+        Handler().postDelayed({
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        }, 3000)
+
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            openFullscreenDialog()
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+          closeFullscreenDialog()
+        }
+    }
+
 
     private fun dinhDangNgayAPI(ngay: Int, thang: Int, nam: Int): String {
         var temp = ""

@@ -10,9 +10,11 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
 import com.example.appxemphim.databinding.FragmentSignUpBinding
+import com.example.appxemphim.request.SignUpRequest
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,7 @@ class SignUpFragment : Fragment() {
 
     private lateinit var binding: FragmentSignUpBinding
     private val userViewModel by viewModels<UserViewModel>()
+    private lateinit var signUpRequest: SignUpRequest
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,13 +48,15 @@ class SignUpFragment : Fragment() {
                     }
 
                     is Resource.Success -> {
-                        if (it.data!! == true) {
+                        if (it.data == true) {
+                            binding.tvEmail.error = null
+                            val b = Bundle()
+                            b.putSerializable("signUpRequest",signUpRequest)
+
+                            findNavController().navigate(R.id.action_signUpFragment_to_otpVerifyFragment,b)
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Trùng username hoặc email",
-                                Toast.LENGTH_LONG
-                            ).show()
+
+                            binding.tvEmail.setError("Trùng username hoặc email")
                         }
                         binding.btnSignUp.revertAnimation()
 
@@ -72,11 +77,13 @@ class SignUpFragment : Fragment() {
     private fun setButtonEvent() {
         binding.btnSignUp.setOnClickListener {
             if (checkInput()) {
-                userViewModel.userSignUp(
+                signUpRequest = SignUpRequest(
                     binding.etUsername.text.toString(),
                     binding.etPass.text.toString(),
-                    binding.etEmail.text.toString()
+                    binding.etEmail.text.toString(), 1
                 )
+
+                userViewModel.userSignUp(signUpRequest)
             }
         }
 
@@ -86,6 +93,8 @@ class SignUpFragment : Fragment() {
     }
 
     private fun checkInput(): Boolean {
+
+
         val username = binding.etUsername.text.toString()
         val email = binding.etEmail.text.toString()
         val pass = binding.etPass.text.toString()

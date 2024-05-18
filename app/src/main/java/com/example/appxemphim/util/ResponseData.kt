@@ -7,9 +7,9 @@ data class ResponseData<T>(
     @SerializedName("data")
     val data: T,
     @SerializedName("desc")
-    val desc: String,
+    val desc: String?,
     @SerializedName("status")
-    val status: Int,
+    val status: Int?,
     @SerializedName("success")
-    val success: Boolean
+    val success: Boolean?
 )

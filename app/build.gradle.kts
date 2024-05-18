@@ -48,7 +48,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.8.0")
     implementation(fileTree(mapOf(
-        "dir" to "D:\\zalopay",
+        "dir" to "libs",
         "include" to listOf("*.aar", "*.jar")
     )))
     testImplementation("junit:junit:4.13.2")

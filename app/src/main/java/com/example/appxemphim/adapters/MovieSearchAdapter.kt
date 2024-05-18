@@ -46,7 +46,7 @@ class MovieSearchAdapter : RecyclerView.Adapter<MovieSearchAdapter.movieSearchVi
 
 
     interface OnItemClickListener {
-        fun onItemClick(id: Int)
+        fun onItemClick(movie: Movie)
     }
 
     var click: OnItemClickListener? = null
@@ -62,7 +62,7 @@ class MovieSearchAdapter : RecyclerView.Adapter<MovieSearchAdapter.movieSearchVi
             binding.tvTenPhim.text = movie.name
             Glide.with(itemView).load(movie.image).into(binding.ivAnhPhim)
             itemView.setOnClickListener {
-               click!!.onItemClick(movie.movieId)
+               click!!.onItemClick(movie)
             }
 
             if(movie.price>0){

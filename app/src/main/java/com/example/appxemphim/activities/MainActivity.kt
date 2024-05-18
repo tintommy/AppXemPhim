@@ -1,7 +1,10 @@
 package com.example.appxemphim.activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appxemphim.R
 import com.example.appxemphim.adapters.MovieSearchAdapter
 import com.example.appxemphim.databinding.ActivityMainBinding
+import com.example.appxemphim.databinding.DialogBuyMovieBinding
 import com.example.appxemphim.fragments.DanhMucFragment
 import com.example.appxemphim.fragments.HomeFragment
 import com.example.appxemphim.fragments.MovieBoughtFragment
@@ -33,6 +37,7 @@ import com.example.appxemphim.viewModel.MovieViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import vn.zalopay.sdk.ZaloPaySDK
 import javax.inject.Inject
 
@@ -44,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     public lateinit var binding: ActivityMainBinding
     private lateinit var movieSearchAdapter: MovieSearchAdapter
     private val movieViewModel by viewModels<MovieViewModel>()
-
+    private lateinit var selectedMovie: Movie
     object muaPhim {
         var thanhToan=false
         lateinit var phim:Movie
@@ -152,11 +157,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+
+
+        lifecycleScope.launch {
+            movieViewModel.existBuyMovie.collectLatest {
+                when (it) {
+
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+
+                    }
+
+                    is Resource.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        if (!it.data!!) {
+                            openBuyMovieDialog(selectedMovie)
+                        } else {
+                            var b: Bundle = Bundle()
+                            b.putInt("movieId", selectedMovie.movieId)
+                            val phimFragment = PhimFragment()
+                            phimFragment.arguments = b
+                           replaceFragment(phimFragment)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
     }
 
 
     override fun onBackPressed() {
-
 
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) binding.drawerLayout.closeDrawer(
             GravityCompat.START
@@ -286,18 +322,56 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.rvSearch.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         movieSearchAdapter.setOnItemClickListener(object : MovieSearchAdapter.OnItemClickListener {
-            override fun onItemClick(movieId: Int) {
+            override fun onItemClick(movie: Movie) {
                 binding.rvSearch.visibility = View.GONE
-                var b: Bundle = Bundle()
-                b.putInt("movieId", movieId)
-                val phimFragment = PhimFragment()
-                phimFragment.arguments = b
-                replaceFragment(phimFragment)
+//                var b: Bundle = Bundle()
+//                b.putInt("movieId", mo)
+//                val phimFragment = PhimFragment()
+//                phimFragment.arguments = b
+//                replaceFragment(phimFragment)
+
+                checkMovie(movie)
 
             }
         })
     }
+    fun checkMovie(movie: Movie) {
+        selectedMovie = movie
 
+
+        if (movie.price > 0) {
+            movieViewModel.checkExistMovieBuy(selectedMovie)
+
+        } else {
+            var b: Bundle = Bundle()
+            b.putInt("movieId", selectedMovie.movieId)
+            val phimFragment = PhimFragment()
+            phimFragment.arguments = b
+             replaceFragment(phimFragment)
+        }
+
+    }
+
+    fun openBuyMovieDialog(movie: Movie) {
+        val dialogBuyMovieBinding: DialogBuyMovieBinding =
+            DialogBuyMovieBinding.inflate(layoutInflater)
+
+        val mDialog =
+            AlertDialog.Builder(this).setView(dialogBuyMovieBinding.root)
+                .create()
+        mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogBuyMovieBinding.tvMoneyPrice.text = movie.price.toString()
+        mDialog.show()
+        // mDialog.dismiss()
+
+
+        dialogBuyMovieBinding.btnConfirm.setOnClickListener {
+            val intent = Intent(this, ThanhToanActivity::class.java)
+            intent.putExtra("movie", movie)
+            startActivity(intent)
+            mDialog.dismiss()
+        }
+    }
     override fun onResume() {
         super.onResume()
         Log.e("MyTag", "on resume")

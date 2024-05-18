@@ -1,6 +1,7 @@
 package com.example.appxemphim.viewModel
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appxemphim.api.API_Instance
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -260,4 +262,20 @@ class MovieViewModel @Inject constructor(private var sharedPref: SharedPreferenc
             }
         }
     }
+
+//    fun checkExistMovieBuy2(movie: Movie):Boolean {
+//        var check=false
+//        Log.e("RunBlocking","before")
+//        runBlocking {
+//            val response = buyMovieApiService.checkExistBuy(movie.movieId, username)
+//            if(response.isSuccessful){
+//                check=response.body()!!.data
+//                Log.e("RunBlocking","in")
+//            }
+//
+//            }
+//
+//        Log.e("RunBlocking","after")
+//       return check
+//    }
 }

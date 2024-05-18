@@ -87,7 +87,6 @@ class HomeFragment : Fragment() {
             }
 
 
-
         }
 
 
@@ -138,15 +137,15 @@ class HomeFragment : Fragment() {
                 when (it) {
 
                     is Resource.Loading -> {
-                        binding.progressBar.visibility= View.VISIBLE
+                        binding.progressBar.visibility = View.VISIBLE
 
                     }
+
                     is Resource.Success -> {
-                        binding.progressBar.visibility= View.GONE
-                        if(!it.data!!){
-                           openBuyMovieDialog(selectedMovie)
-                        }
-                        else{
+                        binding.progressBar.visibility = View.GONE
+                        if (!it.data!!) {
+                            openBuyMovieDialog(selectedMovie)
+                        } else {
                             var b: Bundle = Bundle()
                             b.putInt("movieId", selectedMovie.movieId)
                             val phimFragment = PhimFragment()
@@ -176,18 +175,12 @@ class HomeFragment : Fragment() {
         binding.tvPhimBo.setOnClickListener {
 
 
-            CoroutineScope(Dispatchers.IO).launch {
-                if (movieViewModel.performTask()){
-                    withContext(Dispatchers.Main){
-                    Toast.makeText(requireContext(), "abc", Toast.LENGTH_SHORT).show()
-                        var b: Bundle = Bundle()
-                        b.putInt("categoryId", 2)
-                        b.putString("categoryName", "Phim bộ")
-                        val pageFragment = PageFragment()
-                        pageFragment.arguments = b
-                        (activity as MainActivity).replaceFragment(pageFragment)
-                }}
-            }
+            var b: Bundle = Bundle()
+            b.putInt("categoryId", 2)
+            b.putString("categoryName", "Phim bộ")
+            val pageFragment = PageFragment()
+            pageFragment.arguments = b
+            (activity as MainActivity).replaceFragment(pageFragment)
 
 
         }
@@ -256,16 +249,13 @@ class HomeFragment : Fragment() {
 
 
     fun checkMovie(movie: Movie, price: Int) {
-        selectedMovie=movie
+        selectedMovie = movie
 
 
-        if(price>0)
-        {
-        movieViewModel.checkExistMovieBuy(selectedMovie)
+        if (price > 0) {
+            movieViewModel.checkExistMovieBuy(selectedMovie)
 
-        }
-
-        else{
+        } else {
             var b: Bundle = Bundle()
             b.putInt("movieId", selectedMovie.movieId)
             val phimFragment = PhimFragment()

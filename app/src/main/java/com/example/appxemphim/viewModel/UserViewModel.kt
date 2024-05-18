@@ -44,8 +44,10 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
     private val _changePass = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val changePass = _changePass.asStateFlow()
 
-
-
+    private val _verify = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
+    val verify = _verify.asStateFlow()
+    private val _sendOTP = MutableSharedFlow<Resource<Boolean>>()
+    val sendOTP = _sendOTP.asSharedFlow()
     init {
         initApiService()
     }
@@ -120,24 +122,61 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
         }
     }
 
-    fun userSignUp(username: String, password: String, email: String) {
+    fun userSignUp(signUpRequest: SignUpRequest) {
         viewModelScope.launch {
-            val signUpRequest = SignUpRequest(username, password, email, 1)
-
             _signup.emit(Resource.Loading())
             val response = userService.userSignup(signUpRequest)
+
+
             if (response.isSuccessful)
-                _signup.emit(Resource.Success(response.body()!!.data))
-            else {
-                _signup.emit(Resource.Error("Lỗi khi đăng kí"))
+                _signup.emit(Resource.Success(true))
+
+            if (!response.isSuccessful) {
+                if (response.code() == 409) {
+                    _signup.emit(Resource.Success(false))
+                } else {
+                    _signup.emit(Resource.Error("Lỗi khi đăng kí"))
+
+                }
+            }
+        }
+
+    }
+
+    fun userVerify(email: String, otp: String, newPass: String) {
+        viewModelScope.launch {
+            _verify.emit(Resource.Loading())
+            val response =
+                userService.userVerify(email, otp, newPass, "1")
+            if (response.isSuccessful) {
+                _verify.emit(Resource.Success(response.body()!!.data))
+
+            } else {
+                _verify.emit(Resource.Error("Lỗi khi đăng kí"))
 
             }
 
         }
 
     }
+    fun userChangePassOTP(changePassRequest: ChangePassRequest) {
+        viewModelScope.launch {
+            _sendOTP.emit(Resource.Loading())
 
+            val changePassResponse = changePassRequest?.let { userService.userChangePassOTP(it) }
+            if (changePassResponse!!.isSuccessful) {
 
+                if (changePassResponse.body()!!.data)
+                    _sendOTP.emit(Resource.Success(changePassResponse.body()!!.data))
+                else if (!changePassResponse.body()!!.data) {
+                    _sendOTP.emit(Resource.Success(false))
+                }
+            } else {
+                _sendOTP.emit(Resource.Error("error"))
+            }
+
+        }
+    }
 
 }
 
