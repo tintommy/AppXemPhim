@@ -262,7 +262,7 @@ class PhimFragment : Fragment() {
 
         binding.btnLuuPhim.setOnClickListener {
             if (!phimDaDuocLuu)
-                collectionViewModel.luuPhim(movieId)
+                collectionViewModel.luuPhim(movieId,dinhDangNgayAPI(ngay, thang, nam))
             else {
                 collectionViewModel.xoaPhim(movieId)
 

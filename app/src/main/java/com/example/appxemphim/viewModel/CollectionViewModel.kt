@@ -44,9 +44,9 @@ class CollectionViewModel @Inject constructor(private var sharedPref: SharedPref
         collectionService = retrofit.create(CollectionApiService::class.java)
     }
 
-    fun luuPhim(movieId: Int) {
+    fun luuPhim(movieId: Int,ngay:String) {
         viewModelScope.launch {
-            val collection = Collection(0, "", movieId, "", "", username)
+            val collection = Collection(0, "", movieId, "", ngay, username)
 
             _luuPhim.emit(Resource.Loading())
             val response = collectionService.saveMovieCollection(collection);
