@@ -85,7 +85,7 @@ class OtpVerifyFragment : Fragment() {
 
         binding.tvEmail.text = signUpRequest.email
         binding.btnConfirm.setOnClickListener {
-            userViewModel.userVerify(signUpRequest, binding.etOTP.text.toString())
+            userViewModel.userVerify(signUpRequest.email, binding.etOTP.text.toString(),"")
         }
     }
 

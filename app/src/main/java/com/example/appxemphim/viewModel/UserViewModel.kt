@@ -46,7 +46,8 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
     private val _verify = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val verify = _verify.asStateFlow()
-
+    private val _sendOTP = MutableSharedFlow<Resource<Boolean>>()
+    val sendOTP = _sendOTP.asSharedFlow()
     init {
         initApiService()
     }
@@ -142,14 +143,14 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
     }
 
-    fun userVerify(signUpRequest: SignUpRequest, otp: String) {
+    fun userVerify(email: String, otp: String, newPass: String) {
         viewModelScope.launch {
             _verify.emit(Resource.Loading())
             val response =
-                userService.userVerify(signUpRequest.email, otp, "", "1")
+                userService.userVerify(email, otp, newPass, "1")
             if (response.isSuccessful) {
                 _verify.emit(Resource.Success(response.body()!!.data))
-                Log.e("OTP", response.body()!!.data.toString())
+
             } else {
                 _verify.emit(Resource.Error("Lỗi khi đăng kí"))
 
@@ -157,6 +158,24 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
         }
 
+    }
+    fun userChangePassOTP(changePassRequest: ChangePassRequest) {
+        viewModelScope.launch {
+            _sendOTP.emit(Resource.Loading())
+
+            val changePassResponse = changePassRequest?.let { userService.userChangePassOTP(it) }
+            if (changePassResponse!!.isSuccessful) {
+
+                if (changePassResponse.body()!!.data)
+                    _sendOTP.emit(Resource.Success(changePassResponse.body()!!.data))
+                else if (!changePassResponse.body()!!.data) {
+                    _sendOTP.emit(Resource.Success(false))
+                }
+            } else {
+                _sendOTP.emit(Resource.Error("error"))
+            }
+
+        }
     }
 
 }
