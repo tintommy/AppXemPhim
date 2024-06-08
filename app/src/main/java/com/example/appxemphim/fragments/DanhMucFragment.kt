@@ -99,7 +99,7 @@ class DanhMucFragment : Fragment() {
                 b.putString("categoryName", categoryName)
                 val pageFragment = PageFragment()
                 pageFragment.arguments = b
-                (activity as MainActivity).replaceFragment(pageFragment)
+                (activity as MainActivity).replaceFragment(pageFragment,"PAGE")
             }
         })
 

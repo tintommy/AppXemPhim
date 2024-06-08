@@ -76,7 +76,7 @@ class SavedMovieFragment : Fragment() {
                 b.putInt("movieId", movieId)
                 val phimFragment = PhimFragment()
                 phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment)
+                (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
             }
         })
 

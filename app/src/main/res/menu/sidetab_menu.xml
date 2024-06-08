@@ -29,10 +29,6 @@
             android:icon="@drawable/baseline_collections_bookmark_24"
             android:title="Phim đã mua" />
         <item
-            android:id="@+id/nav_lishSuXem"
-            android:icon="@drawable/schedule_24px"
-            android:title="Lịch sử xem" />
-        <item
             android:id="@+id/nav_trangChu"
             android:icon="@drawable/baseline_home_24"
             android:title="Trang chủ" />

@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.appxemphim.R
 import com.example.appxemphim.databinding.CommentItemLayoutBinding
 import com.example.appxemphim.databinding.DanhMucItemLayoutBinding
 import com.example.appxemphim.model.Category
 import com.example.appxemphim.model.Comment
+import com.example.appxemphim.util.CONFIG
 
 class CommentAdapter: RecyclerView.Adapter<CommentAdapter.commentViewHolder>() {
 
@@ -57,7 +60,7 @@ class CommentAdapter: RecyclerView.Adapter<CommentAdapter.commentViewHolder>() {
     inner class commentViewHolder(val binding: CommentItemLayoutBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(comment: Comment){
             binding.apply {
-                Glide.with(itemView).load(comment.avatar).into(ivAnhCmt)
+                Glide.with(itemView).load(CONFIG.CLOUD_URL+comment.avatar).apply(RequestOptions().error(R.drawable.no_avatar)).into(ivAnhCmt)
                 tvTenCmt.text= comment.name
                 tvNgayCmt.text=comment.date
                 tvCmt.text=comment.comment

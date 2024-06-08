@@ -1,6 +1,7 @@
 package com.example.appxemphim.viewModel
 
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,6 +51,10 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
     val verify = _verify.asStateFlow()
     private val _sendOTP = MutableSharedFlow<Resource<Boolean>>()
     val sendOTP = _sendOTP.asSharedFlow()
+
+    private val _changeAvatar = MutableSharedFlow<Resource<Boolean>>()
+    val changeAvatar = _changeAvatar.asSharedFlow()
+
     init {
         initApiService()
     }
@@ -177,6 +184,26 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
         }
     }
+    fun userChangeAvatar(image: MultipartBody.Part) {
+        viewModelScope.launch {
+            _changeAvatar.emit(Resource.Loading())
+
+            val response= userService.userChangeAvatar(image,username)
+            if (response!!.isSuccessful) {
+
+                if (response.body()!!.data)
+                    _changeAvatar.emit(Resource.Success(response.body()!!.data))
+                else if (!response.body()!!.data) {
+                    _changeAvatar.emit(Resource.Success(false))
+                }
+            } else {
+                _changeAvatar.emit(Resource.Error("error"))
+            }
+
+        }
+    }
+
+
 
 }
 

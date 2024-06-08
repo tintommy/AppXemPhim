@@ -109,7 +109,7 @@ class PageFragment : Fragment() {
                 b.putInt("movieId", movie.movieId)
                 val phimFragment = PhimFragment()
                 phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment)
+                (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
             }
 
 

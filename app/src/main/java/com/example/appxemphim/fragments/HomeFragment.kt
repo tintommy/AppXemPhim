@@ -150,7 +150,7 @@ class HomeFragment : Fragment() {
                             b.putInt("movieId", selectedMovie.movieId)
                             val phimFragment = PhimFragment()
                             phimFragment.arguments = b
-                            (activity as MainActivity).replaceFragment(phimFragment)
+                            (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
                         }
                     }
 
@@ -170,7 +170,7 @@ class HomeFragment : Fragment() {
             b.putString("categoryName", "Phim lẻ")
             val pageFragment = PageFragment()
             pageFragment.arguments = b
-            (activity as MainActivity).replaceFragment(pageFragment)
+            (activity as MainActivity).replaceFragment(pageFragment,"PAGE")
         }
         binding.tvPhimBo.setOnClickListener {
 
@@ -180,7 +180,7 @@ class HomeFragment : Fragment() {
             b.putString("categoryName", "Phim bộ")
             val pageFragment = PageFragment()
             pageFragment.arguments = b
-            (activity as MainActivity).replaceFragment(pageFragment)
+            (activity as MainActivity).replaceFragment(pageFragment,"PAGE")
 
 
         }
@@ -245,6 +245,9 @@ class HomeFragment : Fragment() {
             startActivity(intent)
             mDialog.dismiss()
         }
+        dialogBuyMovieBinding.btnHuy.setOnClickListener {
+            mDialog.dismiss()
+        }
     }
 
 
@@ -260,7 +263,7 @@ class HomeFragment : Fragment() {
             b.putInt("movieId", selectedMovie.movieId)
             val phimFragment = PhimFragment()
             phimFragment.arguments = b
-            (activity as MainActivity).replaceFragment(phimFragment)
+            (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
         }
 
     }

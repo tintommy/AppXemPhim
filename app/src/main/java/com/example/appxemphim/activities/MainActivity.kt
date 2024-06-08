@@ -50,9 +50,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var movieSearchAdapter: MovieSearchAdapter
     private val movieViewModel by viewModels<MovieViewModel>()
     private lateinit var selectedMovie: Movie
+
     object muaPhim {
-        var thanhToan=false
-        lateinit var phim:Movie
+        var thanhToan = false
+        lateinit var phim: Movie
     }
 
     var querySearch: String = ""
@@ -177,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             b.putInt("movieId", selectedMovie.movieId)
                             val phimFragment = PhimFragment()
                             phimFragment.arguments = b
-                           replaceFragment(phimFragment)
+                            replaceFragment(phimFragment,"MOVIE")
                         }
                     }
 
@@ -212,27 +213,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_caNhan -> {
                 val userFragment = UserFragment()
-                replaceFragment(userFragment)
+                replaceFragment(userFragment,"USER")
 
             }
 
             R.id.nav_phimDaLuu -> {
                 val savedMovieFragment = SavedMovieFragment()
-                replaceFragment(savedMovieFragment)
+                replaceFragment(savedMovieFragment,"SAVED")
 
 
             }
 
             R.id.nav_phimDaMua -> {
                 val movieBoughtFragment = MovieBoughtFragment()
-                replaceFragment(movieBoughtFragment)
+                replaceFragment(movieBoughtFragment,"BOUGHT")
 
             }
 
             R.id.nav_trangChu -> {
 
-                replaceFragment(HomeFragment())
-                supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                replaceFragment(HomeFragment(),"HOME")
+                supportFragmentManager.popBackStackImmediate(
+                    null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
             }
 
             R.id.nav_phimLe -> {
@@ -241,7 +245,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 b.putString("categoryName", "Phim lẻ")
                 val pageFragment = PageFragment()
                 pageFragment.arguments = b
-               replaceFragment(pageFragment)
+                replaceFragment(pageFragment,"SHORT")
 
             }
 
@@ -251,12 +255,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 b.putString("categoryName", "Phim bộ")
                 val pageFragment = PageFragment()
                 pageFragment.arguments = b
-                replaceFragment(pageFragment)
+                replaceFragment(pageFragment,"LONG")
 
             }
 
             R.id.nav_theLoaivaQuocGia -> {
-                replaceFragment(DanhMucFragment())
+                supportFragmentManager.popBackStackImmediate(
+                    null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+                replaceFragment(DanhMucFragment(),"CATEGORY")
 
 
             }
@@ -307,12 +315,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-     fun replaceFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: Fragment, tag: String) {
 
+        val fragmentTag = tag
+
+        // Kiểm tra xem fragment đã tồn tại chưa
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainerView, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        val existingFragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+
+        if (existingFragment == null) {
+            transaction.replace(R.id.fragmentContainerView, fragment, fragmentTag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
     }
 
@@ -335,6 +350,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
     }
+
     fun checkMovie(movie: Movie) {
         selectedMovie = movie
 
@@ -347,7 +363,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             b.putInt("movieId", selectedMovie.movieId)
             val phimFragment = PhimFragment()
             phimFragment.arguments = b
-             replaceFragment(phimFragment)
+            replaceFragment(phimFragment,"MOVIE")
         }
 
     }
@@ -372,21 +388,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mDialog.dismiss()
         }
     }
+
     override fun onResume() {
         super.onResume()
         Log.e("MyTag", "on resume")
-         if(muaPhim.thanhToan==true){
-             muaPhim.thanhToan=false
-             var b: Bundle = Bundle()
-             b.putInt("movieId", muaPhim.phim.movieId)
-             val phimFragment = PhimFragment()
-             phimFragment.arguments = b
-             replaceFragment(phimFragment)
-         }
+        if (muaPhim.thanhToan == true) {
+            muaPhim.thanhToan = false
+            var b: Bundle = Bundle()
+            b.putInt("movieId", muaPhim.phim.movieId)
+            val phimFragment = PhimFragment()
+            phimFragment.arguments = b
+            replaceFragment(phimFragment,"MOVIE")
+        }
     }
 
     override fun onPause() {
         super.onPause()
-       // Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show()
     }
 }

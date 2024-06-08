@@ -380,7 +380,7 @@ class PhimFragment : Fragment() {
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             }
-            episodeAdapter.differ.submitList(movie.episodeList)
+            episodeAdapter.differ.submitList(movie.episodeList.sortedBy { it.episode })
             episodeAdapter.setOnItemClickListener(object : EpisodeAdapter.OnItemClickListener {
                 override fun onItemClick(link: String) {
                     setUpPlayerView(link)
@@ -500,4 +500,5 @@ class PhimFragment : Fragment() {
         temp += if (ngay < 10) "0$ngay" else ngay.toString()
         return temp
     }
+
 }

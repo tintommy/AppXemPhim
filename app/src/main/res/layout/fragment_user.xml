@@ -35,7 +35,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="10dp"
-            android:elevation="10dp"
+            android:elevation="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/dv_image"
             app:civ_border_color="#A6A6A6"
@@ -134,5 +134,20 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.95" />
 
+<ProgressBar
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/progressBarChangeAvatar"
+    app:layout_constraintTop_toTopOf="@id/ivAnhUser"
+    app:layout_constraintBottom_toBottomOf="@id/ivAnhUser"
+    app:layout_constraintStart_toStartOf="@id/ivAnhUser"
+    app:layout_constraintEnd_toEndOf="@id/ivAnhUser"
+    android:elevation="20dp"
+    android:indeterminateTint="#F80054"
+    android:visibility="gone"
+    />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.core.widget.NestedScrollView>
