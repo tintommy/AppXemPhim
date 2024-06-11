@@ -95,6 +95,8 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
                 editor.putString("token", response.body()!!.data)
                 editor.putString("username", username)
                 editor.apply()
+                if (!email.equals(""))
+                    getUserByEmail(signInRequest.email)
 
             } else if (response.code() == 404) {
                 Log.e("User", "false")
@@ -105,6 +107,24 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
         }
 
 
+    }
+
+    fun getUserByEmail(email: String) {
+        val token = sharedPref.getString("token", "").toString()
+        var retrofit1 = API_Instance.getClient(token)
+        var userService1: UserApiService = retrofit1.create(UserApiService::class.java)
+
+        viewModelScope.launch {
+
+            val response2 = userService1.getUserByEmail(email)
+            if (response2.isSuccessful) {
+                val editor = sharedPref.edit()
+                editor.putString("username", response2.body()!!.data.username)
+                editor.apply()
+            } else {
+                Log.e("LOGIN", "LỖI")
+            }
+        }
     }
 
     fun userChangePass(oldPass: String, newPass: String) {
@@ -166,6 +186,7 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
         }
 
     }
+
     fun userChangePassOTP(changePassRequest: ChangePassRequest) {
         viewModelScope.launch {
             _sendOTP.emit(Resource.Loading())
@@ -184,11 +205,12 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
         }
     }
+
     fun userChangeAvatar(image: MultipartBody.Part) {
         viewModelScope.launch {
             _changeAvatar.emit(Resource.Loading())
 
-            val response= userService.userChangeAvatar(image,username)
+            val response = userService.userChangeAvatar(image, username)
             if (response!!.isSuccessful) {
 
                 if (response.body()!!.data)
@@ -202,7 +224,6 @@ class UserViewModel @Inject constructor(private var sharedPref: SharedPreference
 
         }
     }
-
 
 
 }

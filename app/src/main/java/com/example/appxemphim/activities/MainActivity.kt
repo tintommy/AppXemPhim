@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             b.putInt("movieId", selectedMovie.movieId)
                             val phimFragment = PhimFragment()
                             phimFragment.arguments = b
-                            replaceFragment(phimFragment,"MOVIE")
+                            replaceFragment(phimFragment, "MOVIE")
                         }
                     }
 
@@ -213,26 +213,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_caNhan -> {
                 val userFragment = UserFragment()
-                replaceFragment(userFragment,"USER")
+                replaceFragment(userFragment, "USER")
 
             }
 
             R.id.nav_phimDaLuu -> {
                 val savedMovieFragment = SavedMovieFragment()
-                replaceFragment(savedMovieFragment,"SAVED")
+                replaceFragment(savedMovieFragment, "SAVED")
 
 
             }
 
             R.id.nav_phimDaMua -> {
                 val movieBoughtFragment = MovieBoughtFragment()
-                replaceFragment(movieBoughtFragment,"BOUGHT")
+                replaceFragment(movieBoughtFragment, "BOUGHT")
 
             }
 
             R.id.nav_trangChu -> {
 
-                replaceFragment(HomeFragment(),"HOME")
+                replaceFragment(HomeFragment(), "HOME")
                 supportFragmentManager.popBackStackImmediate(
                     null,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 b.putString("categoryName", "Phim lẻ")
                 val pageFragment = PageFragment()
                 pageFragment.arguments = b
-                replaceFragment(pageFragment,"SHORT")
+                replaceFragment(pageFragment, "SHORT")
 
             }
 
@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 b.putString("categoryName", "Phim bộ")
                 val pageFragment = PageFragment()
                 pageFragment.arguments = b
-                replaceFragment(pageFragment,"LONG")
+                replaceFragment(pageFragment, "LONG")
 
             }
 
@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     null,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
-                replaceFragment(DanhMucFragment(),"CATEGORY")
+                replaceFragment(DanhMucFragment(), "CATEGORY")
 
 
             }
@@ -323,13 +323,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentTag)
 
-        if (existingFragment == null) {
+        if (existingFragment == null || !existingFragment.isVisible|| tag.equals("MOVIE")) {
             transaction.replace(R.id.fragmentContainerView, fragment, fragmentTag)
             transaction.addToBackStack(null)
             transaction.commit()
+
         }
 
     }
+
 
     private fun initAdapter() {
         movieSearchAdapter = MovieSearchAdapter()
@@ -363,7 +365,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             b.putInt("movieId", selectedMovie.movieId)
             val phimFragment = PhimFragment()
             phimFragment.arguments = b
-            replaceFragment(phimFragment,"MOVIE")
+            replaceFragment(phimFragment, "MOVIE")
         }
 
     }
@@ -398,7 +400,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             b.putInt("movieId", muaPhim.phim.movieId)
             val phimFragment = PhimFragment()
             phimFragment.arguments = b
-            replaceFragment(phimFragment,"MOVIE")
+            replaceFragment(phimFragment, "MOVIE")
         }
     }
 

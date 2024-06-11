@@ -17,6 +17,7 @@ import com.example.appxemphim.R
 import com.example.appxemphim.databinding.ActivityThanhToanBinding
 import com.example.appxemphim.fragments.PhimFragment
 import com.example.appxemphim.model.Movie
+import com.example.appxemphim.util.CONFIG
 import com.example.appxemphim.viewModel.MovieViewModel
 import com.example.appxemphim.zalopay.CreateOrder
 import com.vnpay.authentication.VNP_AuthenticationActivity
@@ -49,7 +50,7 @@ class ThanhToanActivity : AppCompatActivity() {
         movie = (intent.getSerializableExtra("movie") as? Movie)!!
         if (movie != null) {
             binding.tvTenPhim.text = movie.name
-            Glide.with(this).load(movie.image).into(binding.ivHinh)
+            Glide.with(this).load(CONFIG.CLOUD_URL+movie.image).into(binding.ivHinh)
             binding.tvMoneyPrice.text= movie.price.toString()
             binding.btnBack.setOnClickListener {
                 finish()

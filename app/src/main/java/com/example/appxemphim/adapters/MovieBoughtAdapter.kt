@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.appxemphim.databinding.PhimItemLayoutBinding
 import com.example.appxemphim.model.Collection
 import com.example.appxemphim.model.MovieBuy
+import com.example.appxemphim.util.CONFIG
 
 class MovieBoughtAdapter: RecyclerView.Adapter<MovieBoughtAdapter.movieBoughtViewHolder>() {
     private val callback = object : DiffUtil.ItemCallback<MovieBuy>() {
@@ -55,7 +56,7 @@ class MovieBoughtAdapter: RecyclerView.Adapter<MovieBoughtAdapter.movieBoughtVie
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movieBuy: MovieBuy) {
             binding.tvTenPhim.text = movieBuy.movieName;
-            Glide.with(itemView).load(movieBuy.imageMovie.trim()).into(binding.ivAnh)
+            Glide.with(itemView).load(CONFIG.CLOUD_URL+movieBuy.imageMovie.trim()).into(binding.ivAnh)
             itemView.setOnClickListener {
                 click?.onItemClick(movieBuy.movieId)
             }

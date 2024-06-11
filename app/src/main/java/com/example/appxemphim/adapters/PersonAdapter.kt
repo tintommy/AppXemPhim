@@ -12,6 +12,7 @@ import com.example.appxemphim.databinding.DienvienItemLayoutBinding
 import com.example.appxemphim.databinding.PhimItemLayoutBinding
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.model.Person
+import com.example.appxemphim.util.CONFIG
 
 class PersonAdapter:RecyclerView.Adapter<PersonAdapter.personViewHolder>() {
 
@@ -59,7 +60,7 @@ class PersonAdapter:RecyclerView.Adapter<PersonAdapter.personViewHolder>() {
     inner class personViewHolder(val binding: DienvienItemLayoutBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(person: Person) {
             binding.tvTenDv.text = person.name
-            Glide.with(itemView).load(person.image.trim()).into(binding.ivHinhDv)
+            Glide.with(itemView).load(CONFIG.CLOUD_URL+person.image.trim()).into(binding.ivHinhDv)
 //            itemView.setOnClickListener {
 //                click?.onItemClick(movie.movieId)
 //            }

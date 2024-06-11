@@ -87,11 +87,12 @@ class UserFragment : Fragment() {
             userViewModel.changeAvatar.collectLatest {
                 when (it) {
                     is Resource.Loading -> {
-                        binding.progressBarChangeAvatar.visibility= View.VISIBLE
+                        binding.progressBarChangeAvatar.visibility = View.VISIBLE
 
                     }
+
                     is Resource.Success -> {
-                        binding.progressBarChangeAvatar.visibility= View.GONE
+                        binding.progressBarChangeAvatar.visibility = View.GONE
                         userViewModel.getUser()
                     }
 
@@ -104,25 +105,40 @@ class UserFragment : Fragment() {
             }
         }
 
-         selectImageActivityResult =
+        selectImageActivityResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val intent = result.data
                     val imageUri = intent?.data
-                    if (imageUri != null) {
-                        uploadImage(imageUri)
+                    val selectedImages: MutableList<Uri> = ArrayList()
+                    if (intent?.clipData != null) {
+                        val count = intent.clipData?.itemCount ?: 0
+                        (0 until count).forEach {
+                            val imageUri = intent.clipData?.getItemAt(it)?.uri
+                            imageUri?.let {
+                                selectedImages.add(it)
+                            }
+                        }
+                    } else {
+                        val imageUri = intent?.data
+                        selectedImages.add(imageUri!!)
                     }
+
+
+
+                    uploadImage(selectedImages.get(0))
+
                 }
 
             }
     }
 
 
-
     private fun initUser(user: User) {
 
 
-        Glide.with(requireContext()).load(CONFIG.CLOUD_URL+user.avatar).apply(RequestOptions().error(R.drawable.no_avatar)).into(binding.ivAnhUser)
+        Glide.with(requireContext()).load(CONFIG.CLOUD_URL + user.avatar)
+            .apply(RequestOptions().error(R.drawable.no_avatar)).into(binding.ivAnhUser)
         binding.tvUsername.text = user.username
 
         binding.tvEmail.setText(user.email)
@@ -144,7 +160,7 @@ class UserFragment : Fragment() {
 
         binding.ivAnhUser.setOnClickListener {
 
-          openBottomDialog()
+            openBottomDialog()
         }
 
     }
@@ -246,7 +262,7 @@ class UserFragment : Fragment() {
         val dialog: Dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.bottom_dialog_layout)
-        val btnDoiAvatar :TextView= dialog.findViewById(R.id.btnDoiAvatar)
+        val btnDoiAvatar: TextView = dialog.findViewById(R.id.btnDoiAvatar)
 
 
         btnDoiAvatar.setOnClickListener {
@@ -269,7 +285,10 @@ class UserFragment : Fragment() {
 
     private fun uploadImage(uri: Uri) {
         val file = createFileFromUri(uri)
-        val requestFile = RequestBody.create(requireContext().contentResolver.getType(uri)?.toMediaTypeOrNull(), file)
+        val requestFile = RequestBody.create(
+            requireContext().contentResolver.getType(uri)?.toMediaTypeOrNull(),
+            file
+        )
         val body = MultipartBody.Part.createFormData("fileUpload", file.name, requestFile)
 
         userViewModel.userChangeAvatar(body)

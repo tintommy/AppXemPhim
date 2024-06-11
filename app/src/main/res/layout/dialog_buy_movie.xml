@@ -40,6 +40,7 @@
         tools:layout_editor_absoluteY="81dp" />
 
     <TextView
+        android:layout_marginEnd="10dp"
         android:id="@+id/tvMoneyPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,9 +52,26 @@
         android:textColor="#FFE500"
         android:textSize="15sp"
         app:drawableLeftCompat="@drawable/baseline_paid_24"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvVND"
         app:layout_constraintTop_toBottomOf="@id/thanhToan"
-        tools:layout_editor_absoluteY="81dp" />
+      />
+
+        <TextView
+          android:id="@+id/tvVND"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="5dp"
+            android:drawableTint="#FFE500"
+            android:gravity="center_vertical"
+            android:text="VNĐ"
+            android:textStyle="bold"
+            android:textColor="#FFE500"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tvMoneyPrice"
+            app:layout_constraintTop_toBottomOf="@id/thanhToan"
+            />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnConfirm"

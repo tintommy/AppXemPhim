@@ -1,9 +1,13 @@
 package com.example.appxemphim.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.KeyEvent
@@ -18,12 +22,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
+import com.example.appxemphim.activities.ThanhToanActivity
 import com.example.appxemphim.adapters.CommentAdapter
 import com.example.appxemphim.adapters.EpisodeAdapter
 import com.example.appxemphim.adapters.MovieAdapter
 import com.example.appxemphim.adapters.PersonAdapter
+import com.example.appxemphim.databinding.DialogBuyMovieBinding
 import com.example.appxemphim.databinding.FragmentPhimBinding
 import com.example.appxemphim.model.Movie
+import com.example.appxemphim.util.CONFIG
 import com.example.appxemphim.util.Resource
 import com.example.appxemphim.viewModel.CollectionViewModel
 import com.example.appxemphim.viewModel.CommentViewModel
@@ -61,6 +68,8 @@ class PhimFragment : Fragment() {
 
     private lateinit var fullScreenDialog: Dialog
     private var fullscreen = false
+
+    private lateinit var selectedMovie: Movie
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,7 +84,7 @@ class PhimFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //onBackPressed()
         iniFullScreenDialog()
-        binding.videoRatioLayout.setAspectRatio(16f/9f)
+        binding.videoRatioLayout.setAspectRatio(16f / 9f)
         var bundle = arguments
         if (bundle != null) {
             movieId = bundle.getInt("movieId")
@@ -252,7 +261,32 @@ class PhimFragment : Fragment() {
                 }
             }
         }
+        lifecycleScope.launch {
+            movieViewModel.existBuyMovie.collectLatest {
+                when (it) {
 
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+
+                    }
+
+                    is Resource.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        if (!it.data!!) {
+                            openBuyMovieDialog(selectedMovie)
+                        } else {
+                            movieViewModel.loadPhim(selectedMovie.movieId)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
 
         binding.btnFullScreen.setOnClickListener {
 
@@ -262,7 +296,7 @@ class PhimFragment : Fragment() {
 
         binding.btnLuuPhim.setOnClickListener {
             if (!phimDaDuocLuu)
-                collectionViewModel.luuPhim(movieId,dinhDangNgayAPI(ngay, thang, nam))
+                collectionViewModel.luuPhim(movieId, dinhDangNgayAPI(ngay, thang, nam))
             else {
                 collectionViewModel.xoaPhim(movieId)
 
@@ -304,7 +338,7 @@ class PhimFragment : Fragment() {
         commentViewModel.loadCmt(pageCmt, movieId)
         movieViewModel.loadPhimNgauNhien()
         binding.apply {
-            Glide.with(requireContext()).load(movie.image).into(ivHinh)
+            Glide.with(requireContext()).load(CONFIG.CLOUD_URL + movie.image).into(ivHinh)
             tvTenPhim.text = movie.name
             tvLuotXem.text = "Lượt xem: " + movie.views.toString()
             tvSoSao.text = "Đánh giá: " + movie.star.toString() + "/5"
@@ -327,7 +361,13 @@ class PhimFragment : Fragment() {
                 linearChonTapPhim.visibility = View.VISIBLE
 
             }
-
+            if (movie.persons.size > 0) {
+                rvDienVien.visibility = View.VISIBLE
+                tvUpdate.visibility = View.GONE
+            } else {
+                rvDienVien.visibility = View.GONE
+                tvUpdate.visibility = View.VISIBLE
+            }
         }
         initAdapter(movie)
     }
@@ -390,6 +430,7 @@ class PhimFragment : Fragment() {
         }
 
         // diễn viên
+
         personAdapter = PersonAdapter()
         binding.rvDienVien.apply {
             adapter = personAdapter
@@ -409,7 +450,8 @@ class PhimFragment : Fragment() {
         }
         randomMovieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movie: Movie, price: Int) {
-                movieViewModel.loadPhim(movie.movieId)
+                checkMovie(movie, price)
+
 
             }
         })
@@ -425,7 +467,7 @@ class PhimFragment : Fragment() {
 
     private fun setUpPlayerView(link: String) {
         binding.videoPlayer.player = player
-        val mediaItem = MediaItem.fromUri(link.trim())
+        val mediaItem = MediaItem.fromUri(CONFIG.CLOUD_URL + link.trim())
         player.setMediaItem(mediaItem)
 
 
@@ -457,7 +499,7 @@ class PhimFragment : Fragment() {
         fullscreen = false
         fullScreenDialog.dismiss()
 
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
 
     }
 
@@ -486,7 +528,7 @@ class PhimFragment : Fragment() {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             openFullscreenDialog()
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-          closeFullscreenDialog()
+            closeFullscreenDialog()
         }
     }
 
@@ -500,5 +542,50 @@ class PhimFragment : Fragment() {
         temp += if (ngay < 10) "0$ngay" else ngay.toString()
         return temp
     }
+
+    fun openBuyMovieDialog(movie: Movie) {
+        val dialogBuyMovieBinding: DialogBuyMovieBinding =
+            DialogBuyMovieBinding.inflate(layoutInflater)
+
+        val mDialog =
+            AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root)
+                .create()
+        mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogBuyMovieBinding.tvMoneyPrice.text = movie.price.toString()
+        mDialog.show()
+        // mDialog.dismiss()
+
+
+        dialogBuyMovieBinding.btnConfirm.setOnClickListener {
+            val intent = Intent(requireActivity(), ThanhToanActivity::class.java)
+            intent.putExtra("movie", movie)
+            startActivity(intent)
+            mDialog.dismiss()
+        }
+        dialogBuyMovieBinding.btnHuy.setOnClickListener {
+            mDialog.dismiss()
+        }
+    }
+
+
+    fun checkMovie(movie: Movie, price: Int) {
+        selectedMovie = movie
+
+
+        if (price > 0) {
+            movieViewModel.checkExistMovieBuy(selectedMovie)
+
+        } else {
+            var b: Bundle = Bundle()
+            b.putInt("movieId", selectedMovie.movieId)
+            val phimFragment = PhimFragment()
+            phimFragment.arguments = b
+            (activity as MainActivity).replaceFragment(phimFragment, "MOVIE")
+
+            movieViewModel.loadPhim(selectedMovie.movieId)
+        }
+
+    }
+
 
 }

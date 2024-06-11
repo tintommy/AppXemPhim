@@ -13,54 +13,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black">
-<com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-    android:id="@+id/videoRatioLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:resize_mode="fixed_width"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    >
-    <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/videoPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+            android:id="@+id/videoRatioLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resize_mode="fixed_width">
 
-    <ImageView
-        android:id="@+id/ivError"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/video_error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.exoplayer2.ui.StyledPlayerView
+                android:id="@+id/videoPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
 
-</com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageView
+                android:id="@+id/ivError"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/video_error"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
 
 
         <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/btnFullScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="100dp"
-            android:text="Xem toàn màn hình"
-            android:drawableLeft="@drawable/baseline_fullscreen_24"
-            android:textColor="#A4FFFFFF"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:drawableTint="#A4FFFFFF"
             android:layout_marginTop="10dp"
             android:background="@drawable/rectangle_button"
             android:backgroundTint="#00000000"
+            android:drawableLeft="@drawable/baseline_fullscreen_24"
+            android:drawableTint="#A4FFFFFF"
+            android:elevation="100dp"
+            android:text="Xem toàn màn hình"
             android:textAlignment="textStart"
+            android:textColor="#A4FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/leftLine"
             app:layout_constraintTop_toBottomOf="@id/videoRatioLayout" />
 
@@ -221,17 +221,16 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
                 android:layout_marginTop="5dp"
-                android:maxHeight="150dp"
-                android:minHeight="50dp">
+
+                >
 
                 <TextView
                     android:id="@+id/tvThongTin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
                     android:text="Tóm tắt Upgraded 2024 là một bộ phim hài lãng mạn đầy sáng tạo, đã được phát hành trên Amazon Prime Video vào ngày 9 tháng 2 năm 2024. Câu chuyện xoay quanh cuộc sống của Ana, một cô gái trẻ đầy tham vọng và mơ ước về một sự nghiệp trong lĩnh vực nghệ thuật. Trong quá trình cố gắng để gây ấn tượng với sếp khó tính của mình, Claire, Ana đã vô tình gặp Will, một chàng trai lịch lãm và quyến rũ. Một sự nhầm lẫn nhỏ đã khiến Ana trở thành sếp của mình. Với lời nói dối này, cuộc sống của cô bắt đầu thay đổi hoàn toàn. Ana và Will dần trở nên thân thiết và tình cảm giữa họ nảy nở. Tuy nhiên, những rắc rối và tình huống dở khóc dở cười không ngừng xảy ra khi Ana phải duy trì lời nói dối của mình để không bị phát hiện."
                     android:textColor="#9C9C9C"
                     android:textSize="13sp"
@@ -243,29 +242,34 @@
 
 
             <TextView
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:drawableLeft="@drawable/baseline_groups_24"
                 android:text="Diễn viên"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <ScrollView
+            <TextView
+                android:id="@+id/tvUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Đang cập nhật..."
+                android:textColor="#6FFFFFFF"
+                android:textSize="18sp"
+               />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDienVien"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="5dp">
+                android:layout_height="150dp"
+                android:layout_marginTop="5dp"
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvDienVien"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                />
 
-                    />
-            </ScrollView>
 
             <TextView
 
@@ -344,24 +348,24 @@
                 tools:listitem="@layout/comment_item_layout"
 
                 />
+
             <TextView
                 android:id="@+id/tvKoCmt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="Phim này chưa có bình luận"
                 android:textColor="@color/white"
-                android:layout_gravity="center"
-                android:textSize="20sp"
-                android:layout_marginTop="10dp"
-                />
+                android:textSize="20sp" />
 
-<ProgressBar
-    android:id="@+id/progressBar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:indeterminateTint="@color/white"
-    android:layout_gravity="center"
-    />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/white" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

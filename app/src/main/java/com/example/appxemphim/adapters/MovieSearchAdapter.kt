@@ -12,6 +12,7 @@ import com.example.appxemphim.databinding.PhimSearchItemLayoutBinding
 import com.example.appxemphim.databinding.TapPhimItemLayoutBinding
 import com.example.appxemphim.model.Episode
 import com.example.appxemphim.model.Movie
+import com.example.appxemphim.util.CONFIG
 
 class MovieSearchAdapter : RecyclerView.Adapter<MovieSearchAdapter.movieSearchViewHolder>() {
 
@@ -60,7 +61,7 @@ class MovieSearchAdapter : RecyclerView.Adapter<MovieSearchAdapter.movieSearchVi
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             binding.tvTenPhim.text = movie.name
-            Glide.with(itemView).load(movie.image).into(binding.ivAnhPhim)
+            Glide.with(itemView).load(CONFIG.CLOUD_URL+movie.image).into(binding.ivAnhPhim)
             itemView.setOnClickListener {
                click!!.onItemClick(movie)
             }

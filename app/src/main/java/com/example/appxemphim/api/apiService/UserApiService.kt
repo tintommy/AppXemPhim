@@ -39,6 +39,9 @@ interface UserApiService {
     @GET("/api/movie-user/{username}")
     suspend fun getUser(@Path(value = "username") username: String): Response<ResponseData<User>>
 
+    @GET("/api/movie-user/get-by-email")
+    suspend fun getUserByEmail(@Query("email") email: String): Response<ResponseData<User>>
+
     @POST("/api/movie-user/change-pass")
     suspend fun userChangePass(@Body changePassRequest: ChangePassRequest): Response<ResponseData<Boolean>>
 

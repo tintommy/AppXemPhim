@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.bumptech.glide.Glide
 import com.example.appxemphim.databinding.PhimItemLayoutBinding
 import com.example.appxemphim.model.Movie
+import com.example.appxemphim.util.CONFIG
 import kotlinx.coroutines.withContext
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.moviesViewHolder>() {
@@ -58,7 +59,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.moviesViewHolder>() {
     inner class moviesViewHolder(val binding: PhimItemLayoutBinding ):RecyclerView.ViewHolder(binding.root){
         fun bind(movie: Movie){
             binding.tvTenPhim.text=movie.name;
-            Glide.with(itemView).load(movie.image.trim()).into(binding.ivAnh)
+            Glide.with(itemView).load(CONFIG.CLOUD_URL+movie.image.trim()).into(binding.ivAnh)
             itemView.setOnClickListener {
                 click?.onItemClick(movie, movie.price)
             }

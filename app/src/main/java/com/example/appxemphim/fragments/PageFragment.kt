@@ -1,5 +1,9 @@
 package com.example.appxemphim.fragments
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,8 +17,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appxemphim.R
 import com.example.appxemphim.activities.MainActivity
+import com.example.appxemphim.activities.ThanhToanActivity
 import com.example.appxemphim.adapters.MovieAdapter
 import com.example.appxemphim.adapters.PageAdapter
+import com.example.appxemphim.databinding.DialogBuyMovieBinding
 import com.example.appxemphim.databinding.FragmentPageBinding
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.Resource
@@ -32,7 +38,7 @@ class PageFragment : Fragment() {
     private var page = 0
     private var categoryId = 0
     private var categoryName = ""
-
+    private lateinit var selectedMovie: Movie
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,6 +99,37 @@ class PageFragment : Fragment() {
 
         }
 
+        lifecycleScope.launch {
+            movieViewModel.existBuyMovie.collectLatest {
+                when (it) {
+
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+
+                    }
+
+                    is Resource.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        if (!it.data!!) {
+                            openBuyMovieDialog(selectedMovie)
+                        } else {
+                            var b: Bundle = Bundle()
+                            b.putInt("movieId", selectedMovie.movieId)
+                            val phimFragment = PhimFragment()
+                            phimFragment.arguments = b
+                            (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
 
     }
 
@@ -105,11 +142,7 @@ class PageFragment : Fragment() {
         }
         movieAdapter.setOnItemClickListener(object : MovieAdapter.OnItemClickListener {
             override fun onItemClick(movie: Movie,price: Int) {
-                var b: Bundle = Bundle()
-                b.putInt("movieId", movie.movieId)
-                val phimFragment = PhimFragment()
-                phimFragment.arguments = b
-                (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
+                checkMovie(movie, price)
             }
 
 
@@ -137,6 +170,51 @@ class PageFragment : Fragment() {
             categoryName = bundle.getString("categoryName", "")
         }
     }
+
+
+    fun openBuyMovieDialog(movie: Movie) {
+        val dialogBuyMovieBinding: DialogBuyMovieBinding =
+            DialogBuyMovieBinding.inflate(layoutInflater)
+
+        val mDialog =
+            AlertDialog.Builder(activity).setView(dialogBuyMovieBinding.root)
+                .create()
+        mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogBuyMovieBinding.tvMoneyPrice.text = movie.price.toString()
+        mDialog.show()
+        // mDialog.dismiss()
+
+
+        dialogBuyMovieBinding.btnConfirm.setOnClickListener {
+            val intent = Intent(requireActivity(), ThanhToanActivity::class.java)
+            intent.putExtra("movie", movie)
+            startActivity(intent)
+            mDialog.dismiss()
+        }
+        dialogBuyMovieBinding.btnHuy.setOnClickListener {
+            mDialog.dismiss()
+        }
+    }
+
+
+    fun checkMovie(movie: Movie, price: Int) {
+        selectedMovie = movie
+
+
+        if (price > 0) {
+            movieViewModel.checkExistMovieBuy(selectedMovie)
+
+        } else {
+            var b: Bundle = Bundle()
+            b.putInt("movieId", selectedMovie.movieId)
+            val phimFragment = PhimFragment()
+            phimFragment.arguments = b
+            (activity as MainActivity).replaceFragment(phimFragment,"MOVIE")
+        }
+
+    }
+
+
 
     private fun getListPage(number:Int): List<Int>{
         var pageList: MutableList<Int> = ArrayList<Int>()

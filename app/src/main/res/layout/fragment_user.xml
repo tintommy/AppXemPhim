@@ -37,7 +37,7 @@
             android:layout_marginTop="10dp"
             android:elevation="5dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/dv_image"
+            android:src="@drawable/no_avatar"
             app:civ_border_color="#A6A6A6"
             app:civ_border_width="3dp"
             app:layout_constraintBottom_toBottomOf="@id/glTop"
