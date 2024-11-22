@@ -40,7 +40,7 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.countryViewHolder>() 
 
 
     interface OnItemClickListener {
-        fun onItemClick(movieId: Int)
+        fun onItemClick(categoryId: Int, categoryName:String)
     }
 
     var click: OnItemClickListener? = null
@@ -54,6 +54,7 @@ class CountryAdapter : RecyclerView.Adapter<CountryAdapter.countryViewHolder>() 
         RecyclerView.ViewHolder(binding.root) {
         fun bind(country: Country) {
             binding.tvTenMuc.text = country.name
+
         }
 
     }

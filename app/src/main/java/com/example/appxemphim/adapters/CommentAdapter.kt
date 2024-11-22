@@ -61,7 +61,7 @@ class CommentAdapter: RecyclerView.Adapter<CommentAdapter.commentViewHolder>() {
         fun bind(comment: Comment){
             binding.apply {
                 Glide.with(itemView).load(CONFIG.CLOUD_URL+comment.avatar).apply(RequestOptions().error(R.drawable.no_avatar)).into(ivAnhCmt)
-                tvTenCmt.text= comment.name
+                tvTenCmt.text= comment.username
                 tvNgayCmt.text=comment.date
                 tvCmt.text=comment.comment
                 tvSao.text= comment.value.toString()

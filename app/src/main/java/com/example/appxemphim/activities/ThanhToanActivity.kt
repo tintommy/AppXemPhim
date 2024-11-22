@@ -1,27 +1,18 @@
 package com.example.appxemphim.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.appxemphim.R
 import com.example.appxemphim.databinding.ActivityThanhToanBinding
-import com.example.appxemphim.fragments.PhimFragment
 import com.example.appxemphim.model.Movie
 import com.example.appxemphim.util.CONFIG
 import com.example.appxemphim.viewModel.MovieViewModel
 import com.example.appxemphim.zalopay.CreateOrder
-import com.vnpay.authentication.VNP_AuthenticationActivity
-import com.vnpay.authentication.VNP_SdkCompletedCallback
 import dagger.hilt.android.AndroidEntryPoint
 import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK

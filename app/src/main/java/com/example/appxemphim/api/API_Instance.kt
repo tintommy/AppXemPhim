@@ -13,7 +13,7 @@ class API_Instance {
     companion object {
 
 
-     val BASE_URL = "http://192.168.30.102:8080/"
+     val BASE_URL = "http://10.252.6.111/"
         fun getClient(authToken: String): Retrofit {
             val httpClient = OkHttpClient.Builder()
             httpClient.addInterceptor(object : Interceptor {

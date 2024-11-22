@@ -210,6 +210,9 @@ class PhimFragment : Fragment() {
                         ).show()
                         pageCmt = 0
                         commentViewModel.loadCmt(0, movieId)
+                        binding.ratingBar.visibility=View.GONE
+                        binding.etBinhLuan.visibility=View.GONE
+                        binding.btnGuiBinhLuan.visibility=View.GONE
                     }
 
                     is Resource.Error -> {
@@ -370,6 +373,10 @@ class PhimFragment : Fragment() {
             }
         }
         initAdapter(movie)
+
+        binding.ratingBar.visibility=View.VISIBLE
+        binding.etBinhLuan.visibility=View.VISIBLE
+        binding.btnGuiBinhLuan.visibility=View.VISIBLE
     }
 
     override fun onStop() {
@@ -469,9 +476,6 @@ class PhimFragment : Fragment() {
         binding.videoPlayer.player = player
         val mediaItem = MediaItem.fromUri(CONFIG.CLOUD_URL + link.trim())
         player.setMediaItem(mediaItem)
-
-
-
         player.prepare()
         player.play()
     }
